@@ -5,13 +5,6 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +12,120 @@
   }
 }
 
+/* General */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Landing page */
+.container-1 {
+  width: 100%;
+  overflow-x: hidden; 
+  position: relative;
+}
+
+/* Header */
+.header {
+  display: flex;
+  width: 100%;
+  height: 5vh;
+  padding: 4.8%;
+  padding-top: 8vh;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Body */
+.body {
+  display: flex;
+  padding: 4.8%;
+}
+
+.container-2 {
+  width: 100%;;
+}
+
+/* Footer */
+.footer {
+  background-color: #dcdde0;
+  border-top: #a0969671 1px solid;
+  width: 100%;
+  padding: 2.5rem 4.8%;
+  justify-content: center;
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.subtitle {
+  margin-bottom: 1.5vh;
+  font-size: 1.2rem;
+  font-weight: 550;
+}
+
+.copyright {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 5vh;
+  text-align: center;
+}
+
+@media (min-width: 1280px) {
+  div a {
+    font-size: 1.2rem;
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+  }
+
+  .login-button {
+    background-color: #202020;
+    padding: 10px;
+    border-radius: 7px;
+    text-decoration: none;
+    color: #ffffff;
+    font-size: 1.1 rem;
+    font-weight: 600;
+  }
+
+  .big {
+    color: #474545;
+    background-color: #ffffff;
+    font-size: 1.5rem !important;
+    font-weight: 550 !important;
+    padding: 25px 35px;
+    border: #cfcfcf 1px solid;
+    border-radius: 40px;
+  }
+
+  /* Headings */
+  h1 {
+    font-size: 9vh !important;
+    font-weight: 600 !important;
+  }
+  
+  .custom-gap {
+    gap: 40px;
+  }
+
+  .custom-font{
+    font-size: 1.2rem;
+  }
+
+  /* Short menu (hidden) */
+  .menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Normal menu */
+  .nav-links {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+    float: right;
+  }
 }
