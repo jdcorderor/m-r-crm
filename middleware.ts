@@ -14,7 +14,11 @@ export async function middleware(request: NextRequest) {
         }
 
         try {
-            await jwtVerify(token, new TextEncoder().encode("$auth$key"));
+            if (!process.env.JWT_KEY) {
+                throw new Error("La llave no está definida en las variables de entorno");
+            }
+
+            await jwtVerify(token, new TextEncoder().encode(process.env.JWT_KEY));
             return NextResponse.next();
         } catch (error) {
             console.error(error);

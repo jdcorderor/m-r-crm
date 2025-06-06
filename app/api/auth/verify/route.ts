@@ -11,7 +11,11 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        const user = jwt.verify(token, "$auth$key");
+        if (!process.env.JWT_KEY) {
+            throw new Error("La llave no está definida en las variables de entorno");
+        }
+
+        const user = jwt.verify(token, process.env.JWT_KEY);
         return NextResponse.json({ message: user }, { status: 200 });
     } catch(error) {
         console.error("Error:", error);

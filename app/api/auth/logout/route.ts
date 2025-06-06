@@ -12,7 +12,11 @@ export async function GET(request: NextRequest) {
     }
     
     try {
-        jwt.verify(token, "$auth$key");
+        if (!process.env.JWT_KEY) {
+            throw new Error("La llave no está definida en las variables de entorno");
+        }
+        
+        jwt.verify(token, process.env.JWT_KEY);
 
         const cookie = serialize("authToken", "", {
             httpOnly: true,
