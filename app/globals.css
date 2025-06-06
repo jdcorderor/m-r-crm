@@ -52,7 +52,7 @@ body {
   background-color: #dcdde0;
   border-top: #a0969671 1px solid;
   width: 100%;
-  padding: 2.5rem 4.8%;
+  padding: 2rem 4.8% 2rem;
   justify-content: center;
   margin-top: auto;
   display: flex;
@@ -67,29 +67,19 @@ body {
 
 .copyright {
   font-size: 0.9rem;
+  margin-top: 1rem;
   color: #6b7280;
-  margin-top: 5vh;
   text-align: center;
 }
 
 @media (min-width: 1280px) {
-  div a {
+  div a:not(.login a) {
     font-size: 1.2rem;
     color: rgb(0, 0, 0);
     text-decoration: none;
   }
 
-  .login-button {
-    background-color: #202020;
-    padding: 10px;
-    border-radius: 7px;
-    text-decoration: none;
-    color: #ffffff;
-    font-size: 1.1 rem;
-    font-weight: 600;
-  }
-
-  .big {
+  .big-button {
     color: #474545;
     background-color: #ffffff;
     font-size: 1.5rem !important;
@@ -124,8 +114,63 @@ body {
   /* Normal menu */
   .nav-links {
     display: flex;
-    gap: 25px;
+    gap: 40px;
     align-items: center;
     float: right;
+  }
+
+  /* Login */
+  .login {
+    width: 25%;
+    margin: 0rem auto 1rem;
+    padding: 2rem 2.5rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.12), 0 1.5px 6px 0 rgba(0,0,0,0.10);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .login h2 {
+    font-size: 2rem !important;
+    font-weight: 600 !important;
+    margin: 1rem auto 2.8rem;
+    text-align: center;
+  }
+
+  .login label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #666a75;
+    margin-bottom: 0.5vh;
+    width: 100%
+  }
+
+  .login input {
+    margin-bottom: 2vh;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #d1d5db;
+    font-size: 1rem;
+    margin-top: none;
+  }
+
+  .login button {
+    width: 100% !important;
+    margin: none !important;
+    border-radius: 10px;
+    background-color: #f1f3f4;
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: 2px solid #dee2e6;
+    color: #333;
+  }
+
+  .login a {
+    color: #837b7b;
+    text-decoration: none;
+    margin-top: 3rem;
   }
 }

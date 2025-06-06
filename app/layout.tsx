@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin"], preload: true });
 export const metadata: Metadata = {
   title: "Mavarez & Román",
   description: "Sistema CRM para la gestión interna de un consultorio odontológico",
+
 };
 
 export default function RootLayout({
@@ -22,14 +23,9 @@ export default function RootLayout({
         </div>
         {/* Footer */}
         <footer className="footer">
-          <div className="subtitle">
-            Mavarez & Román
-          </div>
-          <div>
-            C.C. El Parral, Piso 1, Oficina 116
-          </div>
           <p className="copyright">
             Copyright 2025 <i className="bi bi-c-circle"></i>, Mavarez & Román. Todos los derechos reservados.
+            <br />Barquisimeto, Edo. Lara, Venezuela.
           </p>
         </footer>
       </body>

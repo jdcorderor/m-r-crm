@@ -1,4 +1,3 @@
-"use client"
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -14,7 +13,9 @@ export default function Home() {
           </div>
           {/* Navigator */}
           <nav className="nav-links">
-            <a href="./login" className="login-button">Iniciar sesión</a>
+            <a href="">Documentación</a>
+            <a href="">Soporte</a>
+            <a href="/login">Iniciar sesión</a>
           </nav>
         </div>
       </header>
@@ -26,7 +27,7 @@ export default function Home() {
           <div className="container-2">
             <h1>Mavarez & Román</h1>
             <br /><br />
-            <a href="./login" className="big login-button">Iniciar sesión</a>
+            <a href="/login" className="big-button">Iniciar sesión</a>
           </div>
         </div>
       </main>
