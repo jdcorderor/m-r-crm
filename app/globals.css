@@ -39,12 +39,17 @@ body {
 
 /* Body */
 .body {
-  display: flex;
-  padding: 4.8%;
+  padding: 1% 4.8% 4.8%;
 }
 
 .container-2 {
-  width: 100%;;
+  width: 100%;
+}
+
+.container-4 {
+  width: 80%;
+  float: left;
+  margin: 3rem auto;
 }
 
 /* Footer */
@@ -94,6 +99,16 @@ body {
     font-size: 9vh !important;
     font-weight: 600 !important;
   }
+
+  h2 {
+    font-size: 5vh !important;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 2.7vh !important;
+    margin-bottom: 2rem !important;
+  }
   
   .custom-gap {
     gap: 40px;
@@ -117,6 +132,7 @@ body {
     gap: 40px;
     align-items: center;
     float: right;
+    cursor: pointer;
   }
 
   /* Login */
@@ -171,6 +187,142 @@ body {
   .login a {
     color: #837b7b;
     text-decoration: none;
+    margin-top: 1.3rem;
+  }
+
+  .error-message {
+    text-align: center;
+    color: #801f1f;
+    background-color: #fee2e2;
+    border-radius: 0.5rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.1);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  /* Users table */
+  .table-container {
     margin-top: 3rem;
+  }
+
+  .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .table-container table th {
+    background-color: #f1f3f4;
+    color: #333;
+    font-weight: 600;
+    padding: 0.7rem 1rem 0.7rem;
+    text-align: left;
+  }
+
+  .table-container table td {
+    padding: 0.7rem 1rem 0.7rem;
+    color: #444;
+  }
+
+  .table-container table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+
+  .table-container table tr:hover {
+    background-color: #e6e6e6;
+    transition: background 0.2s;
+  }
+
+  .table-container button:not(.table-container td button) {
+    width: 20% !important;
+    margin: 1.5rem auto 1rem !important;
+    display: block;
+    border-radius: 10px;
+    background-color: #f1f3f4;
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: 2px solid #dee2e6;
+    color: #333;
+    
+  }
+
+  .table-container .edit-button {
+    background-color: #4f8cff; 
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    margin-right: 6px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .table-container .edit-button:hover {
+    background-color: #2563eb;   
+    color: #fff;
+  }
+
+  .table-container .delete-button {
+    background-color: #f87171; 
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .table-container .delete-button:hover {
+    background-color: #dc2626; 
+    color: #fff;
+  }
+
+  /* Forms */
+  .user-registration {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 2rem;
+    padding-top: 3rem;
+  }
+
+  .input-container {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 2rem;
+  }
+
+  label {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #666a75;
+    margin-bottom: 0.5rem;
+    width: 100%
+  }
+
+  input, select {
+    margin-bottom: 1rem !important;
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #d1d5db;
+    font-size: 1rem;
+    margin-top: none;
+  }
+
+  form button {
+    display: block;
+    width: 40% !important;
+    margin: 2.2rem auto 1rem !important;
+    border-radius: 10px;
+    background-color: #f1f3f4;
+    padding: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: 2px solid #dee2e6;
+    color: #333;
   }
 }

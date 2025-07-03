@@ -1,20 +1,21 @@
 "use client"
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";    
+import { useRouter } from "next/navigation";
+import { handleLogout } from "../services/logoutService";
 import "bootstrap/dist/css/bootstrap.min.css";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
+import Calendar from "@/components/calendar"
 export default function Dashboard() {
+    // Router
+    const router = useRouter();
+    
     // State variable for user role
     const [user, setUser] = useState({
         username: "",
         role: "",
     });
 
-    // Router
-    const router = useRouter();
-
-    // Verification handler
+    // User verification handler
     useEffect(() => {
         const verifyAuth = async () => {
             try {
@@ -41,30 +42,15 @@ export default function Dashboard() {
             }
         };
         verifyAuth();
-    }, [router]);
+    }, [router]);    
 
-    // Logout handler
-    const handleLogout = async () => {
-        try {
-            const response = await fetch("/api/auth/logout", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-            });
+    // ---------------------------------------------------------------------------
 
-            if (response.ok) {
-                router.push("/login")
-            }
-        } catch(error) {
-            console.error("Error:", error)
-        }
-    } 
+    // ---------------------------------------------------------------------------
 
     // Verify user variable
-    if (!user) return null;
-
+    if (user.username === "" && user.role === "") return null;
+    
     return (
         <div>
             {/* Header */}
@@ -75,26 +61,24 @@ export default function Dashboard() {
                 </div>
                 {/* Navigator */}
                 <nav className="nav-links">
-                    {user.role != "administrador" && (
-                        <section className="nav-links">
-                            <a href="/pacientes">Pacientes</a>
-                            <a href="/calendario">Calendario</a>
-                            <a href="/administracion">Ingresos/Egresos</a>
-                            <a href="/archivos">Archivos</a>
-                            <a href="/reportes">Reportes</a>
-                            <a href="/micuenta">Mi cuenta</a> 
-                        </section>
-                    )}
-
-                    {user.role === "administrador" && (
-                        <a className="nav-links" onClick={ handleLogout }>Cerrar sesión</a>
-                    )}
+                    <a href="/pacientes">Pacientes</a>
+                    <a href="/calendario">Calendario</a>
+                    <a href="/administracion">Ingresos/Egresos</a>
+                    <a href="/archivos">Archivos</a>
+                    <a href="/reportes">Reportes</a>
+                    <a href="/micuenta">Mi cuenta</a> 
+                    <a onClick={async () => { await handleLogout(); router.push("/login"); }}>Cerrar sesión</a>
                 </nav>
                 </div>
             </header>
 
             {/* Main content */}
-            <main>
+            <main className="body">
+                <h2>Calendario</h2>
+                <div className="container-4">
+                    <Calendar />
+                </div>
+                
             </main>
         </div>
     );

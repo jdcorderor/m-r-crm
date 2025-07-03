@@ -44,7 +44,7 @@ export async function POST(request: Request) {
             path: "/",
         });
 
-        const response = NextResponse.json({ message: "OK" }, { status: 200 });
+        const response = NextResponse.json({ message: { role: user.rol } }, { status: 200 });
         response.headers.set("Set-Cookie", cookie);
         return response;
     } catch(error) {
