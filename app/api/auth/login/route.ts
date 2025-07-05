@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         await client.connect();
         const { username, password } = await request.json();
         
-        const result = await client.query("SELECT usuario, clave, rol FROM usuarios WHERE usuario = $1", [username]);
+        const result = await client.query("SELECT usuario, clave, rol FROM usuarios WHERE usuario = $1 AND operativo = $2", [username, true]);
         const user = result.rows[0];
 
         if (!user) {
@@ -32,9 +32,9 @@ export async function POST(request: Request) {
         }
 
         const token = jwt.sign({
-                username: username,
-                role: user.rol,
-            }, process.env.JWT_KEY, { expiresIn: "1d" });
+            username: username,
+            role: user.rol,
+        }, process.env.JWT_KEY, { expiresIn: "1d" });
                 
         const cookie = serialize('authToken', token, {
             httpOnly: true,

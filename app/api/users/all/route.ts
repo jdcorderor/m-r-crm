@@ -14,11 +14,13 @@ export async function GET() {
             SELECT
                 u.usuario,
                 u.rol,
-                o.email,
-                o.cedula,
-                o.id
-            FROM usuarios u
+                COALESCE(o.email, e.email) AS email,
+                COALESCE(o.cedula, e.cedula) AS cedula,
+                COALESCE(o.id, e.id) AS id
+            FROM usuarios u 
             LEFT JOIN odontologos o ON u.odontologo_id = o.id
+            LEFT JOIN empleados e ON u.empleado_id = e.id
+            WHERE u.operativo = true;
         `;
 
         const results = await client.query(query);
@@ -28,7 +30,7 @@ export async function GET() {
             username: row.usuario,
             role: row.rol,
             email: row.email || null,
-            dentist_id: row.dentist || null,
+            person_id: row.id || null,
         }));
         
         return NextResponse.json(data);

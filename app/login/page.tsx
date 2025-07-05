@@ -1,8 +1,9 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import "bootstrap/dist/css/bootstrap.min.css";
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import HeaderA from "@/components/headerA";
+import Input from "@/components/ui/input";
+import Button from "@/components/ui/button";
 
 export default function Login() {
   // Router
@@ -64,9 +65,11 @@ export default function Login() {
       const data = await response.json();
 
       if (data.message.role === "administrador") {
-        router.push("/usuarios");
+        router.push("/administrador");
+      } else if (data.message.role === "general") {
+        router.push("/especialista");
       } else {
-        router.push("/inicio");
+        router.push("/auxiliar");
       }
     } catch (error) {
       console.error("Error al enviar los datos:", error);
@@ -75,29 +78,34 @@ export default function Login() {
   };
 
   return (
-    <div>
-      <header>
-        <div className="header">
-          <div className="custom-font">
-            <a href="../">Mavarez & Román</a>
-          </div>
-        </div>
-      </header>
+    <section className="flex flex-col justify-start pb-[5vh] min-h-screen">
 
-      <main>
-        <div className="login">
-          <h2>Mavarez & Román</h2>
-          <form onSubmit={ handleLogin }>
-            <label htmlFor="username">Usuario *</label>
-            <input type="text" name="username" id="username" onChange={ handleChange } placeholder="Usuario" />
-            <label htmlFor="password">Contraseña *</label>
-            <input type="password" name="password" id="password" onChange={ handleChange } placeholder="Contraseña" />
-            {errorMessage && <p className="error-message">{ errorMessage }</p>}
-            <button> Iniciar sesión</button>
+      {/* Header */}
+      <HeaderA />
+
+      {/* Login section */}
+      <main className="w-full mt-32">
+        <div className="flex flex-col items-center">
+          <span className="text-4xl text-gray-800 font-semibold mb-8">Mavarez & Román</span>
+          <form onSubmit={handleLogin} className="w-full max-w-[350px]">
+
+            <div className="mb-6">
+              <label htmlFor="username" className="pl-2 pb-2 block">Usuario *</label>
+              <Input type="text" name="username" id="username" className="block w-full border-gray-300" onChange={handleChange} value={credentials.username} placeholder="Usuario" autoComplete="username" />
+            </div>
+
+            <div className="mb-6">
+              <label htmlFor="password" className="pl-2 pb-2 block">Contraseña *</label>
+              <Input type="password" name="password" id="password" className="block w-full border-gray-300" onChange={handleChange} value={credentials.password} placeholder="Contraseña" autoComplete="current-password"/>
+            </div>
+
+            {errorMessage && <p className="text-red-600 text-sm my-4 text-center">{errorMessage}</p>}
+
+            <Button type="submit" className="w-full bg-gray-100 border-3 border-gray-400 text-gray-800 font-semibold py-2 rounded-[5vw] shadow-sm hover:bg-gray-200 transition duration-200">Iniciar sesión</Button>
           </form>
-          <a href="">¿Olvidó su contraseña?</a>
+          <a href="#" className="mt-6 text-sm" style={{ textDecoration: 'none', color: 'rgb(104, 104, 104)' }}>¿Olvidó su contraseña?</a>
         </div>
       </main>
-    </div>
+    </section>
   );
 }

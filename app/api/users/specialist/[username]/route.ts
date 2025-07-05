@@ -23,7 +23,8 @@ export async function GET(request: NextRequest, context: { params: { username: s
                 o.telefono,
                 o.email,
                 o.especialidad,
-                o.descripcion
+                o.descripcion,
+                o.imagen_url
             FROM usuarios u 
             LEFT JOIN odontologos o ON u.odontologo_id = o.id
             WHERE u.usuario = $1
@@ -41,6 +42,7 @@ export async function GET(request: NextRequest, context: { params: { username: s
                 email: row.email || null,
                 specialty: row.especialidad || null,
                 description: row.descripcion || null,
+                image_url: row.imagen_url || null,
             },
             user: {
                 username: row.usuario || null,

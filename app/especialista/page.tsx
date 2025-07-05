@@ -1,11 +1,10 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { handleLogout } from "../services/logoutService";
-import "bootstrap/dist/css/bootstrap.min.css";
+import HeaderB from "@/components/headerB";
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import Calendar from "@/components/calendar"
-export default function Dashboard() {
+
+export default function DashboardB() {
     // Router
     const router = useRouter();
     
@@ -46,40 +45,13 @@ export default function Dashboard() {
 
     // ---------------------------------------------------------------------------
 
-    // ---------------------------------------------------------------------------
-
     // Verify user variable
     if (user.username === "" && user.role === "") return null;
     
     return (
         <div>
             {/* Header */}
-            <header>
-                <div className="header" >
-                <div className="custom-font">
-                    <a href="/inicio">Mavarez & Román</a>
-                </div>
-                {/* Navigator */}
-                <nav className="nav-links">
-                    <a href="/pacientes">Pacientes</a>
-                    <a href="/calendario">Calendario</a>
-                    <a href="/administracion">Ingresos/Egresos</a>
-                    <a href="/archivos">Archivos</a>
-                    <a href="/reportes">Reportes</a>
-                    <a href="/micuenta">Mi cuenta</a> 
-                    <a onClick={async () => { await handleLogout(); router.push("/login"); }}>Cerrar sesión</a>
-                </nav>
-                </div>
-            </header>
-
-            {/* Main content */}
-            <main className="body">
-                <h2>Calendario</h2>
-                <div className="container-4">
-                    <Calendar />
-                </div>
-                
-            </main>
+            <HeaderB />
         </div>
     );
 }

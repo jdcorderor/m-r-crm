@@ -10,24 +10,11 @@ export const metadata: Metadata = {
 
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
       <body className={inter.className}>
-        <div className="container-1">
-          {children}
-        </div>
-        {/* Footer */}
-        <footer className="footer">
-          <p className="copyright">
-            Copyright 2025 <i className="bi bi-c-circle"></i>, Mavarez & Román. Todos los derechos reservados.
-            <br />Barquisimeto, Edo. Lara, Venezuela.
-          </p>
-        </footer>
+        {children}
       </body>
     </html>
   );
