@@ -2,12 +2,12 @@ import { Client } from "pg";
 import { NextResponse, NextRequest } from "next/server";
 
 // GET Route
-export async function GET(request: NextRequest, context: { params: { username: string }}) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{username: string}> }): Promise<NextResponse> {
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
     });
 
-    const { username } = await context.params;
+    const { username } = await params;
 
     try {
         await client.connect();
