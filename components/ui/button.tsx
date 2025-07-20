@@ -8,7 +8,7 @@ const Button = ({ children, ...props }: ButtonProps) => (
     <button
         role="button"
         {...props}
-        className={`${props.className || ""} px-4 py-2.5 font-semibold text-md text-center duration-150 shadow-md hover:bg-gray-200 rounded-5 `}
+        className={`px-4 py-2.5 font-semibold text-md text-center duration-150 shadow-md rounded-5 ${props.className || ""}`}
     >
         {children}
     </button>

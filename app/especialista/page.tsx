@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import HeaderB from "@/components/headerB";
+import Button from "@/components/ui/button"
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 export default function DashboardB() {
@@ -41,15 +42,13 @@ export default function DashboardB() {
             }
         };
         verifyAuth();
-    }, [router]);    
-
+    }, [router]);   
     // ---------------------------------------------------------------------------
-
     // Verify user variable
     if (user.username === "" && user.role === "") return null;
     
     return (
-        <div>
+        <div className="min-h-screen">
             {/* Header */}
             <HeaderB />
         </div>
