@@ -7,7 +7,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 export default function DashboardB() {
     // Router
     const router = useRouter();
-    
+
     // State variable for user role
     const [user, setUser] = useState({
         username: "",
@@ -41,17 +41,16 @@ export default function DashboardB() {
             }
         };
         verifyAuth();
-    }, [router]);    
+    }, [router]);
 
     // ---------------------------------------------------------------------------
 
     // Verify user variable
     if (user.username === "" && user.role === "") return null;
-    
+
     return (
         <div>
             {/* Header */}
-            <HeaderB />
         </div>
     );
 }
