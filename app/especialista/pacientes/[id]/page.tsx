@@ -1,11 +1,11 @@
-"use client"
+'use client'
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from "react"
-import HeaderB from "@/components/headerB"
-import Button from "@/components/ui/button"
-import Input from "@/components/ui/input"
+import HeaderB from "@/components/headerB" // Eliminado para simplificar y centrarse en el estilo interno
+import Button from "@/components/ui/button" // Reemplazado por botones con estilo Tailwind directo
+// import Input from "@/components/ui/input" // No utilizado en el código original, eliminado
 import Loading from "@/components/loading"
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap-icons/font/bootstrap-icons.css' // Mantenido si los íconos son necesarios
 
 const PacientePage = () => {
     const { id } = useParams();
@@ -106,86 +106,103 @@ const PacientePage = () => {
     };
 
     return (
-        <section>
-            {isLoading && (
-                <div className="flex justify-center items-center min-h-screen bg-white transition-opacity duration-500">
-                    <Loading />
-                </div>
-            )}
-            {!isLoading && (
-                <div>
-                    {/* Header */}
-                    <HeaderB />
-                    <main className="w-full px-[5vw] pt-4">
-                        <div className="my-5"> {/* Información y datos del paciente */}
-                            <hr className="border border-gray-200 my-5"></hr>
-                            <span className="block text-gray-800 text-2xl font-semibold">Consulta Médica</span>
-                            <div className="flex flex-row w-full justify-between my-6">
-                                <div className="flex flex-col gap-2 mt-5">
-                                    <h3><span className="text-2xl font-bold">Paciente</span></h3>
-                                    <h3><span>{`Número de Historia: ${id}`}</span></h3>
-                                    <h3><span>{`Nombre: ${pacienteDetalles?.nombre}`}</span></h3>
-                                    <h3><span>{`Edad: ${calcularEdad(pacienteDetalles?.fecha_nacimiento)}`}</span></h3>
-                                </div>
-                                <div className="flex flex-col gap-2 justify-end text-right">
-                                    <Button className='rounded-2xl text-sm shadow-md border border border-gray-300 hover:bg-gray-200'
+        <div>
+            <HeaderB />
+            <section className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-10">
+                {isLoading && (
+                    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                        <Loading />
+                    </div>
+                )}
+                {!isLoading && (
+                    <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
+                        <main className="w-full">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                                Detalles del Paciente
+                            </h1>
+
+                            {/* Información y datos del paciente */}
+                            <div className="my-5 pb-8 border-b border-gray-200">
+                                <h2 className="block text-2xl font-bold text-gray-800 mb-4">Consulta Médica</h2>
+                                <div className="flex flex-col md:flex-row w-full justify-between my-6 gap-8">
+                                    <div className="flex-1 flex flex-col gap-2">
+                                        <h3 className="text-xl font-bold text-gray-700">Paciente</h3>
+                                        <p className="text-gray-600"><span>Número de Historia: <span className="font-medium">{id}</span></span></p>
+                                        <p className="text-gray-600"><span>Nombre: <span className="font-medium">{pacienteDetalles?.nombre}</span></span></p>
+                                        <p className="text-gray-600"><span>Edad: <span className="font-medium">{calcularEdad(pacienteDetalles?.fecha_nacimiento)} años</span></span></p>
+                                    </div>
+                                    <div className="flex flex-col gap-2 md:text-right justify-end">
+                                        <Button
+                                            className='px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out max-w-fit'
                                             onClick={() => {
                                                 const date = new Date()
                                                 const numero = (Math.round(Math.random() * 1000000)).toString().padStart(7, "0")
                                                 setdateFormat(`${date.getDate().toString().padStart(2, "0")}-${(date.getMonth() + 1).toString().padStart(2, "0")}-${date.getFullYear()}`)
                                                 setconsultaNumber(`${numero}`)
                                             }}>
-                                        Nueva Consulta
+                                            Nueva Consulta
+                                        </Button>
+                                        <p className="text-gray-600">N° de Consulta: <span className="font-bold text-gray-800">{consultaNumber}</span></p>
+                                        <p className="text-gray-600">Fecha: <span className="font-bold text-gray-800">{dateFormat}</span></p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col md:flex-row w-full justify-center gap-4 md:gap-8 mt-8">
+                                    <Button
+                                        className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                                        onClick={() => { router.push(`/especialista/pacientes/historia_clinica/${id}`) }}>
+                                        Historia Clínica
                                     </Button>
-                                    <h3>N° de Consulta: <span className="font-bold">{consultaNumber}</span></h3>
-                                    <h3>Fecha: <span className="font-bold">{dateFormat}</span></h3>
+                                    <Button
+                                        className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out">
+                                        Historia de Consultas
+                                    </Button>
+                                    <Button
+                                        className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out">
+                                        Historia Pagos
+                                    </Button>
+                                    <Button
+                                        className="px-6 py-3 bg-green-500 text-white rounded-full shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                                        onClick={() => { router.push(`/especialista/pacientes/odontodiagrama/${id}`) }}>
+                                        Odontodiagrama
+                                    </Button>
                                 </div>
                             </div>
-                            <div className="flex flex-row w-full justify-center gap-15">
-                                <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600"
-                                        onClick={() => {router.push(`/especialista/pacientes/historia_clinica/${id}`)}}>
-                                    Historia Clínica
-                                </Button>
-                                <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
-                                    Historia de Consultas
-                                </Button>
-                                <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
-                                    Historia Pagos
-                                </Button>
-                                <Button className="text-white rounded-full border border-gray-300 bg-green-500 hover:bg-green-600"
-                                    onClick={() => {router.push(`/especialista/pacientes/odontodiagrama/${id}`)}}>
-                                    Odontodiagrama
-                                </Button>
-                            </div>
-                        </div>
-                        <div className="my-10"> {/* Diagnóstico y Tratamiento Adicional */}
-                            <hr className="border border-gray-200 my-5"></hr>
-                            <span className="block text-gray-800 text-2xl font-bold">Diagnóstico y Tratamiento Adicional</span>
-                            <div className="flex flex-col w-full justify-between my-6">
-                                <div className="flex flex-row gap-2 my-5 justify-center items-center gap-15">
-                                    <h3><span className="text-md">Diagnóstico</span></h3>
-                                    <select className='border border-gray-300 shadow-md rounded-2xl text-md p-3'>
-                                        <option value="Diagnóstico 1">Diagnóstico 1</option>
-                                        <option value="Diagnóstico 2">Diagnóstico 2</option>
-                                        <option value="Diagnóstico 3">Diagnóstico 3</option>
-                                        <option value="Diagnóstico 4">Diagnóstico 4</option>
-                                    </select>
-                                </div>
-                                <div className="flex flex-row gap-2 my-5 justify-center items-center gap-15">
-                                    <h3><span className="text-md">Tratamiento</span></h3>
-                                    <select className='border border-gray-300 shadow-md rounded-2xl text-md p-3'>
-                                        <option value="Tratamiento 1">Tratamiento 1</option>
-                                        <option value="Tratamiento 2">Tratamiento 2</option>
-                                        <option value="Tratamiento 3">Tratamiento 3</option>
-                                        <option value="Tratamiento 4">Tratamiento 4</option>
-                                    </select>
+
+                            {/* Diagnóstico y Tratamiento Adicional */}
+                            <div className="my-10">
+                                <h2 className="block text-2xl font-bold text-gray-800 mb-4">Diagnóstico y Tratamiento Adicional</h2>
+                                <div className="flex flex-col md:flex-row w-full justify-center gap-8 my-6">
+                                    <div className="flex-1 flex flex-col gap-2 items-center md:items-start">
+                                        <label htmlFor="diagnostico-select" className="text-lg font-medium text-gray-700 mb-2">Diagnóstico</label>
+                                        <select
+                                            id="diagnostico-select"
+                                            className='w-full md:w-auto border border-gray-300 shadow-sm rounded-lg text-md p-3 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out'
+                                        >
+                                            <option value="Diagnóstico 1">Diagnóstico 1</option>
+                                            <option value="Diagnóstico 2">Diagnóstico 2</option>
+                                            <option value="Diagnóstico 3">Diagnóstico 3</option>
+                                            <option value="Diagnóstico 4">Diagnóstico 4</option>
+                                        </select>
+                                    </div>
+                                    <div className="flex-1 flex flex-col gap-2 items-center md:items-start">
+                                        <label htmlFor="tratamiento-select" className="text-lg font-medium text-gray-700 mb-2">Tratamiento</label>
+                                        <select
+                                            id="tratamiento-select"
+                                            className='w-full md:w-auto border border-gray-300 shadow-sm rounded-lg text-md p-3 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out'
+                                        >
+                                            <option value="Tratamiento 1">Tratamiento 1</option>
+                                            <option value="Tratamiento 2">Tratamiento 2</option>
+                                            <option value="Tratamiento 3">Tratamiento 3</option>
+                                            <option value="Tratamiento 4">Tratamiento 4</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </main>
-                </div>
-            )}
-        </section>
+                        </main>
+                    </div>
+                )}
+            </section>
+        </div>
     );
 };
 

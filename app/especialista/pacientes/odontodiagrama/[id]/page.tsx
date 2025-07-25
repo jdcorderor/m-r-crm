@@ -478,80 +478,82 @@ const OdontodiagramaPage = () => {
                 <div>
                     {/* Header */}
                     <HeaderB />
-                    <main className="w-full px-[5vw] pt-4">
-                        <div className="my-5"> {/* Información y datos del paciente */}
-                            <span className="block text-gray-800 text-2xl font-semibold">Consulta Médica</span>
-                            <div className="flex flex-row w-full justify-between my-6">
-                                <div className="flex flex-col gap-2 mt-5">
-                                    <h3><span className="text-2xl font-bold">Paciente</span></h3>
-                                    <h3><span>{`Número de Historia: ${id}`}</span></h3>
-                                    <h3><span>{`Nombre: ${pacienteDetalles?.nombre}`}</span></h3>
-                                    <h3><span>{`Edad: ${calcularEdad(pacienteDetalles?.fecha_nacimiento)}`}</span></h3>
+                    <main className="w-full px-[5vw] pt-4 bg-gray-100 min-h-screen">
+                        <div className="flex flex-col items-center justify-center w-full">
+                            <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8"> {/* Información y datos del paciente */}
+                                <span className="block text-gray-800 text-2xl font-semibold">Consulta Médica</span>
+                                <div className="flex flex-row w-full justify-between my-6">
+                                    <div className="flex flex-col gap-2 mt-5">
+                                        <h3><span className="text-2xl font-bold">Paciente</span></h3>
+                                        <p className="text-gray-600"><span>Número de Historia: <span className="font-medium">{id}</span></span></p>
+                                        <p className="text-gray-600"><span>Nombre: <span className="font-medium">{pacienteDetalles?.nombre}</span></span></p>
+                                        <p className="text-gray-600"><span>Edad: <span className="font-medium">{calcularEdad(pacienteDetalles?.fecha_nacimiento)} años</span></span></p>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-5">
+                                    <div className="flex flex-row w-full justify-center gap-15">
+                                        <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600"
+                                                onClick={() => {router.push(`/especialista/pacientes/historia_clinica/${id}`)}}>
+                                            Historia Clínica
+                                        </Button>
+                                        <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
+                                            Historia de Consultas
+                                        </Button>
+                                        <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
+                                            Historia Pagos
+                                        </Button>
+                                        <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600"
+                                            onClick={() => {router.push(`/especialista/pacientes/${id}`)}}>
+                                            Datos Paciente
+                                        </Button>
+                                    </div>
+                                    <div className="flex flex-row w-full justify-center gap-15">
+                                        <Button className="text-white rounded-full border border-gray-300 bg-green-500 hover:bg-green-600"
+                                                onClick={() => {setSeeNewOdonto(true); setSeehystori(false);}}>
+                                            Nuevo Odontodiagrama
+                                        </Button>
+                                        <Button className="text-white rounded-full border border-gray-300 bg-green-500 hover:bg-green-600"
+                                            onClick={() => {setSeeNewOdonto(false); setSeehystori(true);}}>
+                                            Historico de Odontodiagrama
+                                        </Button>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex flex-col gap-5">
-                                <div className="flex flex-row w-full justify-center gap-15">
-                                    <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600"
-                                            onClick={() => {router.push(`/especialista/pacientes/historia_clinica/${id}`)}}>
-                                        Historia Clínica
-                                    </Button>
-                                    <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
-                                        Historia de Consultas
-                                    </Button>
-                                    <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
-                                        Historia Pagos
-                                    </Button>
-                                    <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600"
-                                        onClick={() => {router.push(`/especialista/pacientes/${id}`)}}>
-                                        Datos Paciente
-                                    </Button>
-                                </div>
-                                <div className="flex flex-row w-full justify-center gap-15">
-                                    <Button className="text-white rounded-full border border-gray-300 bg-green-500 hover:bg-green-600"
-                                            onClick={() => {setSeeNewOdonto(true); setSeehystori(false);}}>
-                                        Nuevo Odontodiagrama
-                                    </Button>
-                                    <Button className="text-white rounded-full border border-gray-300 bg-green-500 hover:bg-green-600"
-                                        onClick={() => {setSeeNewOdonto(false); setSeehystori(true);}}>
-                                        Historico de Odontodiagrama
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className={seeNewOdonto ? "block" : "hidden"}>
-                            <div className="mb-8">
-                                <div className="flex justify-between mt-10 mb-4">
-                                    <h2 className="text-xl font-semibold mb-4">Id: 0000000</h2>
-                                    <h2 className="text-xl font-semibold mb-4">{`Número de Historia: ${id}`}</h2>
-                                    <h2 className="text-xl font-semibold mb-4">{`Nombre: ${pacienteDetalles?.nombre}`}</h2>
-                                </div>
-                                <Odontodiagrama
-                                    onChange={handleOdontodiagramaChange}
-                                    readOnly={false}
-                                />
-                            </div>
-                            <div className="flex justify-end mb-8">
-                                <Button className="bg-blue-500 hover:bg-blue-600 rounded-full text-white"
-                                    onClick = {() => {alert("Implementar guardar cambios aquí :D")}}>
-                                    Guardar Cambios
-                                </Button>
-                            </div>
-                        </div>
-                        <div className={seeHystori ? "block" : "hidden"}>
-                            {historias.map((historia, index) => (
-                                <div className="mb-8 mt-12" key={index}> {/* Added a unique key prop */}
+                            <div className={seeNewOdonto ? "block" : "hidden"}>
+                                <div className="mb-8">
                                     <div className="flex justify-between mt-10 mb-4">
-                                        <h2 className="text-xl font-semibold mb-4">Id: {index}</h2>
-                                        <h2 className="text-xl font-semibold mb-4">{`Número de Historia: ${id}`}</h2> 
-                                        <h2 className="text-xl font-semibold mb-4">{`Nombre: ${pacienteDetalles?.nombre || 'N/A'}`}</h2>
+                                        <h2 className="text-xl font-semibold mb-4">Id: 0000000</h2>
+                                        <h2 className="text-xl font-semibold mb-4">{`Número de Historia: ${id}`}</h2>
+                                        <h2 className="text-xl font-semibold mb-4">{`Nombre: ${pacienteDetalles?.nombre}`}</h2>
                                     </div>
                                     <Odontodiagrama
-                                        onChange={() => {}} // No hacer nada en modo lectura
-                                        initialData={historia} // This is correct, 'historia' is the current JSON object
-                                        readOnly={true}
+                                        onChange={handleOdontodiagramaChange}
+                                        readOnly={false}
                                     />
                                 </div>
-                            ))}
+                                <div className="flex justify-end mb-8">
+                                    <Button className="bg-blue-500 hover:bg-blue-600 rounded-full text-white"
+                                        onClick = {() => {alert("Implementar guardar cambios aquí :D")}}>
+                                        Guardar Cambios
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className={seeHystori ? "block" : "hidden"}>
+                                {historias.map((historia, index) => (
+                                    <div className="mb-8 mt-12" key={index}> {/* Added a unique key prop */}
+                                        <div className="flex justify-between mt-10 mb-4">
+                                            <h2 className="text-xl font-semibold mb-4">Id: {index}</h2>
+                                            <h2 className="text-xl font-semibold mb-4">{`Número de Historia: ${id}`}</h2> 
+                                            <h2 className="text-xl font-semibold mb-4">{`Nombre: ${pacienteDetalles?.nombre || 'N/A'}`}</h2>
+                                        </div>
+                                        <Odontodiagrama
+                                            onChange={() => {}} // No hacer nada en modo lectura
+                                            initialData={historia} // This is correct, 'historia' is the current JSON object
+                                            readOnly={true}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </main>
                 </div>

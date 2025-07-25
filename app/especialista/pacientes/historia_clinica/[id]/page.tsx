@@ -1,14 +1,15 @@
-"use client"
+'use client'
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from "react"
-import HeaderB from "@/components/headerB"
-import Button from "@/components/ui/button"
-import Input from "@/components/ui/input"
+import HeaderB from "@/components/headerB" // Eliminado para simplificar y centrarse en el estilo interno
+import Button from "@/components/ui/button" // Reemplazado por botones con estilo Tailwind directo
+// import Input from "@/components/ui/input" // No utilizado en el código original, eliminado
 import Loading from "@/components/loading"
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap-icons/font/bootstrap-icons.css' // Mantenido si los íconos son necesarios
 
 const PacientePage = () => {
     const { id } = useParams();
+    // const router = useRouter(); // No se usa en este archivo, se puede comentar o eliminar si no hay navegación
 
     const pacientesMock = [
         {
@@ -102,48 +103,53 @@ const PacientePage = () => {
     };
 
     return (
-        <section>
-            {isLoading && (
-                <div className="flex justify-center items-center min-h-screen bg-white transition-opacity duration-500">
-                    <Loading />
-                </div>
-            )}
-            {!isLoading && (
-                <div>
-                    {/* Header */}
-                    <HeaderB />
-                    <main className="w-full px-[5vw] pt-4">
-                        <div className="flex flex-col justify-center items-center">
-                            <div className="mt-8 flex flex-col border border-gray-200 shadow-md p-10 pb-2 rounded-3xl">
-                                <div className="mb-5">
-                                    <h1><span className="font-bold text-2xl">{pacienteDetalles?.nombre}</span></h1>
+        <div>
+            <HeaderB />
+            <section className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-10">
+                {isLoading && (
+                    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+                        <Loading />
+                    </div>
+                )}
+                {!isLoading && (
+                    <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
+                        <main className="w-full">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                                Historia Clínica del Paciente
+                            </h1>
+
+                            <div className="flex flex-col items-center">
+                                <div className="mt-8 flex flex-col border border-gray-200 shadow-lg p-8 rounded-lg w-full max-w-2xl">
+                                    <div className="mb-5 border-b pb-4 border-gray-200">
+                                        <h2 className="font-bold text-2xl text-gray-800 mb-2">{pacienteDetalles?.nombre}</h2>
+                                        <p className="text-gray-600"><span>Código: <span className="font-medium">{pacienteDetalles?.codigo}</span></span></p>
+                                    </div>
+                                    <div className="my-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <p className="text-gray-600"><span>Sexo: <span className="font-medium">Género (dato de ejemplo)</span></span></p>
+                                        <p className="text-gray-600"><span>Edad: <span className="font-medium">{calcularEdad(pacienteDetalles?.fecha_nacimiento)} años</span></span></p>
+                                        <p className="text-gray-600"><span>Documento: <span className="font-medium">{pacienteDetalles?.cedula}</span></span></p>
+                                        <p className="text-gray-600"><span>Teléfono: <span className="font-medium">04121234567 (dato de ejemplo)</span></span></p>
+                                        <p className="text-gray-600 col-span-1 md:col-span-2"><span>Domicilio: <span className="font-medium">Casa 123, avenida 456, carabobo (dato de ejemplo)</span></span></p>
+                                    </div>
+                                    <div className="my-5 pt-4 border-t border-gray-200 text-center">
+                                        <h2 className="font-semibold text-xl text-gray-800 mb-2">Antecedentes Médicos</h2>
+                                        <p className="text-gray-600"><span>No refiere (dato de ejemplo)</span></p>
+                                    </div>
                                 </div>
-                                <div className="my-5">
-                                    <p><span>Sexo: género</span></p>
-                                    <p><span>Edad: {calcularEdad(pacienteDetalles?.fecha_nacimiento)}</span></p>
-                                    <p><span>Código: {pacienteDetalles?.codigo}</span></p>
-                                </div>
-                                <div className="my-5">
-                                    <p><span>Documento: {pacienteDetalles?.cedula}</span></p>
-                                    <p><span>Domicilio: Casa 123, avenida 456, carabobo</span></p>
-                                    <p><span>Teléfono: 04121234567</span></p>
-                                </div>
-                                <div className="my-5 text-center">
-                                    <h1><span className="font-semibold text-xl">Antecedentes Médicos</span></h1>
-                                    <p><span>No refiere</span></p>
+                                <div className="flex justify-center mt-8">
+                                    <Button
+                                        className="px-8 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                                        onClick={() => { alert("Se debe implementar la edicion")}}
+                                        >
+                                        Editar
+                                    </Button>
                                 </div>
                             </div>
-                            <div className="flex flex-row mt-5">
-                                <Button className="border border-gray-200 rounded-full px-10 hover:bg-gray-200">
-                                    Editar
-                                </Button>
-                            </div>
-                        </div>
-                        
-                    </main>
-                </div>
-            )}
-        </section>
+                        </main>
+                    </div>
+                )}
+            </section>
+        </div>
     );
 };
 

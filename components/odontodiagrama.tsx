@@ -467,7 +467,7 @@ export function Odontodiagrama({
   return (
     <div className="space-y-8">
       {!readOnly && (
-        <div className="mb-6 p-4 bg-gray-50 rounded-lg border">
+        <div className="mb-6 p-4 bg-white rounded-lg border border-gray-300">
           <h3 className="font-medium mb-3 text-gray-700">Estado dental seleccionado:</h3>
           
           <div className="grid grid-cols-5 gap-3">
@@ -562,7 +562,7 @@ export function Odontodiagrama({
           </div>
         </div>
       )}
-      <div className="border rounded-lg p-4">
+      <div className="border border-gray-300 bg-white rounded-lg p-4">
         {/* Cuadrante Superior */}
         <div className="flex border-b border-dashed">
           {/* Cuadrante Superior Izquierdo */}
