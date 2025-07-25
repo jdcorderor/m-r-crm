@@ -238,7 +238,7 @@ export default function Users() {
                                 <div className="w-full flex items-center justify-center">
                                     <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
                                     onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
-                                                        window.open(`/especialista/pacientes/historia_clinica/${PacienteDettales.codigo}`, '_blank')
+                                                        router.push(`/especialista/pacientes/historia_clinica/${PacienteDettales.codigo}`)
                                             }}}>
                                         Historia Clínica
                                     </Button>
@@ -248,12 +248,15 @@ export default function Users() {
                                     <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3">
                                         Historia de Pagos
                                     </Button>
-                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3">
+                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
+                                            onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
+                                            router.push(`/especialista/pacientes/odontodiagrama/${PacienteDettales.codigo}`)
+                                            }}}>
                                         Odontodiagrama
                                     </Button>
                                     <Button className="bg-green-500 hover:bg-green-600 cursor-pointer rounded-full text-white mx-3"
                                             onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
-                                                                router.push(`/especialista/pacientes/${PacienteDettales.codigo}`)
+                                            router.push(`/especialista/pacientes/${PacienteDettales.codigo}`)
                                             }}}>
                                         Iniciar Atención
                                     </Button>

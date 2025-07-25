@@ -9,6 +9,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 
 const PacientePage = () => {
     const { id } = useParams();
+    const router = useRouter();
 
     const pacientesMock = [
         {
@@ -142,7 +143,7 @@ const PacientePage = () => {
                             </div>
                             <div className="flex flex-row w-full justify-center gap-15">
                                 <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600"
-                                        onClick={() => {window.open(`/especialista/pacientes/historia_clinica/${id}`, '_blank')}}>
+                                        onClick={() => {router.push(`/especialista/pacientes/historia_clinica/${id}`)}}>
                                     Historia Clínica
                                 </Button>
                                 <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
@@ -151,7 +152,8 @@ const PacientePage = () => {
                                 <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
                                     Historia Pagos
                                 </Button>
-                                <Button className="text-white rounded-full border border-gray-300 bg-green-500 hover:bg-green-600">
+                                <Button className="text-white rounded-full border border-gray-300 bg-green-500 hover:bg-green-600"
+                                    onClick={() => {router.push(`/especialista/pacientes/odontodiagrama/${id}`)}}>
                                     Odontodiagrama
                                 </Button>
                             </div>
