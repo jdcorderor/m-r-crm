@@ -37,7 +37,7 @@ export default function HeaderA() {
             </button>
           </SheetTrigger>
           <SheetContent>
-            <nav className="flex flex-col gap-4 mt-8">
+            <nav className="flex flex-col gap-4 mt-8 duration-500">
               {routes.map((route) => (
                 <Link key={route.href} href={route.href} className="text-[2.7vh] text-white transition-colors" style={{ textDecoration: "none" }} onClick={() => setIsOpen(false)}>
                   {route.label}
