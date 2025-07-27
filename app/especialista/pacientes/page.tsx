@@ -135,8 +135,9 @@ export default function Users() {
     const pacientesFiltrados = pacientesMock.filter((paciente) => {
         const nombre = paciente.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
         const cedula = paciente.cedula?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
+        const id = paciente.codigo?.toString() || "";
         const termino = searchTerm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return nombre.includes(termino) || cedula.includes(termino);
+        return nombre.includes(termino) || cedula.includes(termino) || id.includes(termino);
     });
 
 
@@ -170,13 +171,11 @@ export default function Users() {
             
             {!isLoading && (
                 <div>
-                    {/* Header */}
-                    <HeaderB />
                     <main className="w-full px-[5vw] pt-8">
                         <span className="block text-gray-800 text-2xl font-semibold mb-6">Buscar Paciente</span>
                         <div className="bg-white py-1">
                             <Input className="border border-gray-300 font-medium" 
-                                    placeholder= "1234567 / Pedro Peréz"
+                                    placeholder= "#id / 1234567 / Pedro Peréz"
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}>
@@ -186,7 +185,7 @@ export default function Users() {
                                     <thead className="sticky top-0 bg-gray-100">
                                         <tr>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">#</th>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Cédula / RIF</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Cédula</th>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Paciente</th>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Edad</th>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Acciones</th>

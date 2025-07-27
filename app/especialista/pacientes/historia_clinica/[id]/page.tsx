@@ -104,7 +104,6 @@ const PacientePage = () => {
 
     return (
         <div>
-            <HeaderB />
             <section className="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-10">
                 {isLoading && (
                     <div className="min-h-screen bg-gray-100 flex items-center justify-center">

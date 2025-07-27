@@ -476,8 +476,6 @@ const OdontodiagramaPage = () => {
             )}
             {!isLoading && (
                 <div>
-                    {/* Header */}
-                    <HeaderB />
                     <main className="w-full px-[5vw] pt-4 bg-gray-100 min-h-screen">
                         <div className="flex flex-col items-center justify-center w-full">
                             <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8"> {/* Información y datos del paciente */}
