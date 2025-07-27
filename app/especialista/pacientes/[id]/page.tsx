@@ -148,15 +148,17 @@ const PacientePage = () => {
                                 <div className="flex flex-col md:flex-row w-full justify-center gap-4 md:gap-8 mt-8">
                                     <Button
                                         className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
-                                        onClick={() => { router.push(`/especialista/pacientes/historia_clinica/${id}`) }}>
+                                        onClick={() => { router.push(`/especialista/pacientes/historia_clinica/${id}`)}}>
                                         Historia Clínica
                                     </Button>
                                     <Button
-                                        className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out">
+                                        className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                                            onClick={() => {router.push(`/especialista/pacientes/historia_consultas/${id}`)}}>
                                         Historia de Consultas
                                     </Button>
                                     <Button
-                                        className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out">
+                                        className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                                        onClick={() => {router.push(`/especialista/pacientes/historia_pagos/${id}`)}}>
                                         Historia Pagos
                                     </Button>
                                     <Button
@@ -166,7 +168,6 @@ const PacientePage = () => {
                                     </Button>
                                 </div>
                             </div>
-
                             {/* Diagnóstico y Tratamiento Adicional */}
                             <div className="my-10">
                                 <h2 className="block text-2xl font-bold text-gray-800 mb-4">Diagnóstico y Tratamiento Adicional</h2>

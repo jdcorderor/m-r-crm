@@ -241,10 +241,16 @@ export default function Users() {
                                             }}}>
                                         Historia Clínica
                                     </Button>
-                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3">
+                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
+                                            onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
+                                            router.push(`/especialista/pacientes/historia_consultas/${PacienteDettales.codigo}`)
+                                            }}}>
                                         Historia de Consultas
                                     </Button>
-                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3">
+                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
+                                            onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
+                                            router.push(`/especialista/pacientes/historia_pagos/${PacienteDettales.codigo}`)
+                                            }}}>
                                         Historia de Pagos
                                     </Button>
                                     <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"

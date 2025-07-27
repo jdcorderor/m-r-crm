@@ -1,15 +1,12 @@
 'use client'
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from "react"
-import HeaderB from "@/components/headerB" // Eliminado para simplificar y centrarse en el estilo interno
-import Button from "@/components/ui/button" // Reemplazado por botones con estilo Tailwind directo
-// import Input from "@/components/ui/input" // No utilizado en el código original, eliminado
+import Button from "@/components/ui/button"
 import Loading from "@/components/loading"
-import 'bootstrap-icons/font/bootstrap-icons.css' // Mantenido si los íconos son necesarios
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 const PacientePage = () => {
     const { id } = useParams();
-    // const router = useRouter(); // No se usa en este archivo, se puede comentar o eliminar si no hay navegación
 
     const pacientesMock = [
         {
@@ -113,6 +110,12 @@ const PacientePage = () => {
                 {!isLoading && (
                     <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
                         <main className="w-full">
+                            <div className="flex flex-row w-full justify-start">
+                                <Button className="bg-gray-300 rounded-full"
+                                        onClick = {() => {window.history.back()}}>
+                                    Volver
+                                </Button>
+                            </div>
                             <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
                                 Historia Clínica del Paciente
                             </h1>
