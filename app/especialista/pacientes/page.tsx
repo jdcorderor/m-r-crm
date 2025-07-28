@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import HeaderB from "@/components/headerB"
 import Button from "@/components/ui/button"
 import Input from "@/components/ui/input"
 import Loading from "@/components/loading"
@@ -10,13 +9,13 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 export default function Users() {
     // Router
     const router = useRouter();
-    
+
     // State variable for user role
     const [user, setUser] = useState({
         username: "",
         role: "",
     });
-    
+
     // User verification handler
     useEffect(() => {
         const verifyAuth = async () => {
@@ -51,7 +50,7 @@ export default function Users() {
     // State variable for loading view
     const [isLoading, setIsLoading] = useState(true);
 
-    
+
     // ---------------------------------------------------------------------------
     type Paciente = {
         codigo?: number;
@@ -159,26 +158,26 @@ export default function Users() {
     // Verify user variable
     if (user.username === "" && user.role === "") return null;
 
-    
-    
+
+
     return (
         <section>
             {isLoading && (
                 <div className="flex justify-center items-center min-h-screen bg-white transition-opacity duration-500">
                     <Loading />
                 </div>
-            )}            
-            
+            )}
+
             {!isLoading && (
                 <div>
                     <main className="w-full px-[5vw] pt-8">
                         <span className="block text-gray-800 text-2xl font-semibold mb-6">Buscar Paciente</span>
                         <div className="bg-white py-1">
-                            <Input className="border border-gray-300 font-medium" 
-                                    placeholder= "#id / 1234567 / Pedro Peréz"
-                                    type="text"
-                                    value={searchTerm}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}>
+                            <Input className="border border-gray-300 font-medium"
+                                placeholder="1234567 / Pedro Peréz"
+                                type="text"
+                                value={searchTerm}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}>
                             </Input>
                             <div className={`overflow-x-auto duration-500 ${verPaciente ? "max-h-[20vh]" : "max-h-[60vh]"}`}>
                                 <table className="min-w-full divide-y divide-gray-200">
@@ -200,13 +199,14 @@ export default function Users() {
                                                 <td className="px-4 py-2">{calcularEdad(paciente.fecha_nacimiento)}</td>
                                                 <td className="px-4 py-2 flex gap-2">
                                                     <button className="text-blue-600 hover:text-blue-800 p-1 rounded disabled:opacity-50 cursor-pointer" title="Ver Detalles"
-                                                            onClick={() => {setPacienteDettales(paciente);
-                                                                            setverPaciente(true);
-                                                            }}> 
+                                                        onClick={() => {
+                                                            setPacienteDettales(paciente);
+                                                            setverPaciente(true);
+                                                        }}>
                                                         <i className="bi bi-eye"></i>
                                                     </button>
                                                     <button className="text-green-600 hover:text-green-800 p-1 rounded disabled:opacity-50 cursor-pointer" title="Atender"
-                                                            onClick={() => router.push(`/especialista/pacientes/${paciente.codigo}`)}>
+                                                        onClick={() => router.push(`/especialista/pacientes/${paciente.codigo}`)}>
                                                         <i className="bi bi-house-add"></i>
                                                     </button>
                                                 </td>
@@ -236,37 +236,47 @@ export default function Users() {
                                 </div>
                                 <div className="w-full flex items-center justify-center">
                                     <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
-                                    onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
-                                                        router.push(`/especialista/pacientes/historia_clinica/${PacienteDettales.codigo}`)
-                                            }}}>
+                                        onClick={() => {
+                                            if (PacienteDettales && PacienteDettales.codigo) {
+                                                router.push(`/especialista/pacientes/historia_clinica/${PacienteDettales.codigo}`)
+                                            }
+                                        }}>
                                         Historia Clínica
                                     </Button>
                                     <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
-                                            onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
-                                            router.push(`/especialista/pacientes/historia_consultas/${PacienteDettales.codigo}`)
-                                            }}}>
+                                        onClick={() => {
+                                            if (PacienteDettales && PacienteDettales.codigo) {
+                                                router.push(`/especialista/pacientes/historia_consultas/${PacienteDettales.codigo}`)
+                                            }
+                                        }}>
                                         Historia de Consultas
                                     </Button>
                                     <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
-                                            onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
-                                            router.push(`/especialista/pacientes/historia_pagos/${PacienteDettales.codigo}`)
-                                            }}}>
+                                        onClick={() => {
+                                            if (PacienteDettales && PacienteDettales.codigo) {
+                                                router.push(`/especialista/pacientes/historia_pagos/${PacienteDettales.codigo}`)
+                                            }
+                                        }}>
                                         Historia de Pagos
                                     </Button>
                                     <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
-                                            onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
-                                            router.push(`/especialista/pacientes/odontodiagrama/${PacienteDettales.codigo}`)
-                                            }}}>
+                                        onClick={() => {
+                                            if (PacienteDettales && PacienteDettales.codigo) {
+                                                router.push(`/especialista/pacientes/odontodiagrama/${PacienteDettales.codigo}`)
+                                            }
+                                        }}>
                                         Odontodiagrama
                                     </Button>
                                     <Button className="bg-green-500 hover:bg-green-600 cursor-pointer rounded-full text-white mx-3"
-                                            onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
-                                            router.push(`/especialista/pacientes/${PacienteDettales.codigo}`)
-                                            }}}>
+                                        onClick={() => {
+                                            if (PacienteDettales && PacienteDettales.codigo) {
+                                                router.push(`/especialista/pacientes/${PacienteDettales.codigo}`)
+                                            }
+                                        }}>
                                         Iniciar Atención
                                     </Button>
                                     <Button className="bg-gray-300 rounded-full mx-3"
-                                            onClick={() => setverPaciente(false)}>
+                                        onClick={() => setverPaciente(false)}>
                                         Volver
                                     </Button>
                                 </div>
