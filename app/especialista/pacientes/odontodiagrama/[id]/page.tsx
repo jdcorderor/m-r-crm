@@ -491,22 +491,6 @@ const OdontodiagramaPage = () => {
                                 </div>
                                 <div className="flex flex-col gap-5">
                                     <div className="flex flex-row w-full justify-center gap-15">
-                                        <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600"
-                                                onClick={() => {router.push(`/especialista/pacientes/historia_clinica/${id}`)}}>
-                                            Historia Clínica
-                                        </Button>
-                                        <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
-                                            Historia de Consultas
-                                        </Button>
-                                        <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600">
-                                            Historia Pagos
-                                        </Button>
-                                        <Button className="text-white rounded-full border border-gray-300 bg-blue-500 hover:bg-blue-600"
-                                            onClick={() => {router.push(`/especialista/pacientes/${id}`)}}>
-                                            Datos Paciente
-                                        </Button>
-                                    </div>
-                                    <div className="flex flex-row w-full justify-center gap-15">
                                         <Button className="text-white rounded-full border border-gray-300 bg-green-500 hover:bg-green-600"
                                                 onClick={() => {setSeeNewOdonto(true); setSeehystori(false);}}>
                                             Nuevo Odontodiagrama
