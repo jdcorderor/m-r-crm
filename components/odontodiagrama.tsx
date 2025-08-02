@@ -60,7 +60,7 @@ export function Odontodiagrama({
   }, [sectores, onChange]);
 
   const isFullToothValue = (value: number) => {
-    return [0, 5, 6, 9, 10, 11, 12, 13].includes(value);
+    return [0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].includes(value);
   };
 
   const cambiarSegmento = (sector: number, dienteIndex: number, segmento: number) => {
@@ -82,7 +82,6 @@ export function Odontodiagrama({
       return newSectores;
     });
   };
-
 
   // Agregar diente al final
   const agregarDiente = (sector: number) => {
@@ -210,16 +209,15 @@ export function Odontodiagrama({
     sector: number,
     index: number,
     segmento: number,
-    valor: number,
+    valor: number, // May not be needed, but kept for clarity
     diente: Diente
   ) => {
-    const fullToothValue = Object.values(diente.segmentos).find(v => isFullToothValue(v));
+    // const fullToothValue = Object.values(diente.segmentos).find(v => isFullToothValue(v)); // May not be needed, but kept for clarity
     const displayValue = diente.segmentos[segmento];
 
     let fillClass = "fill-white";
     let strokeColor = "stroke-gray-800";
     let strokeWidth = "";
-    let additionalElements = null;
     let fullToothMark = null;
     let outerCircle = null;
 
@@ -238,87 +236,137 @@ export function Odontodiagrama({
         strokeColor = "stroke-red-600";
         strokeWidth = "stroke-2";
         break;
-      case 4: // Ausente
-        fillClass = "fill-black";
-        break;
-      case 5: // Exodoncia realizada
-        if (segmento === 1) {
+      case 4: // Exodoncia realizada
+        if (segmento) {
           fullToothMark = (
             <text 
               x="25" 
-              y="25" 
+              y="30" 
               dominantBaseline="middle" 
               textAnchor="middle" 
-              className="text-2xl font-bold fill-blue-600 pointer-events-none"
+              className="text-[3rem] font-bold fill-blue-600 pointer-events-none"
             >
               X
             </text>
           );
         }
         break;
-      case 6: // Exodoncia indicada
-        if (segmento === 1) {
+      case 5: // Exodoncia indicada
+        if (segmento) {
           fullToothMark = (
             <text 
               x="25" 
-              y="25" 
+              y="30" 
               dominantBaseline="middle" 
               textAnchor="middle" 
-              className="text-2xl font-bold fill-red-500 pointer-events-none"
+              className="text-[3rem] font-semibold fill-red-500 pointer-events-none"
             >
               X
             </text>
           );
         }
         break;
-      case 7: // Endodoncia realizada
-        additionalElements = renderEndodoncia(segmento, "blue");
+      case 6: // Endodoncia realizada
+        if (segmento) {
+          fullToothMark = (
+            <text 
+              x="25" 
+              y="29" 
+              dominantBaseline="middle" 
+              textAnchor="middle" 
+              className="text-[2.5rem] font-semibold fill-blue-600 pointer-events-none"
+            >
+              |
+            </text>
+          );
+        }
         break;
-      case 8: // Endodoncia indicada
-        additionalElements = renderEndodoncia(segmento, "red");
+      case 7: // Endodoncia indicada
+          if (segmento) {
+          fullToothMark = (
+            <text 
+              x="25" 
+              y="29" 
+              dominantBaseline="middle" 
+              textAnchor="middle" 
+              className="text-[2.5rem] font-bold fill-red-500 pointer-events-none"
+            >
+              |
+            </text>
+          );
+        }
         break;
-      case 9: // Corona/Prótesis fija
+      case 8: // Corona/Prótesis fija
         fillClass = "fill-blue-400";
         break;
-      case 10: // Corona/Prótesis indicada
+      case 9: // Corona/Prótesis indicada
         fillClass = "fill-red-300";
         break;
-      case 11: // Diente en erupción
+      case 10: // Diente en erupción
         if (segmento === 1) {
           outerCircle = (
             <circle 
               cx="25" 
               cy="25" 
-              r="30" 
+              r="25" 
               className="stroke-blue-500 stroke-2 fill-none pointer-events-none"
             />
           );
         }
         break;
-      case 12: // Erupción con inflamación
+      case 11: // Erupción con inflamación
         if (segmento === 1) {
           outerCircle = (
             <circle 
               cx="25" 
               cy="25" 
-              r="30" 
+              r="25" 
               className="stroke-red-500 stroke-2 fill-none pointer-events-none"
             />
           );
         }
         break;
-      case 13: // Diente sano
-        if (segmento === 1) {
+      case 12: // Diente sano
+        if (segmento) {
           fullToothMark = (
             <text 
               x="25" 
-              y="25" 
+              y="30" 
               dominantBaseline="middle" 
               textAnchor="middle" 
-              className="text-2xl font-bold fill-blue-600 pointer-events-none"
+              className="text-[3rem] font-semibold fill-blue-600 pointer-events-none"
             >
               S
             </text>
+          );
+        }
+        break;
+      case 13: // Diente ausente
+        if (segmento) {
+          fullToothMark = (
+            <text 
+              x="25" 
+              y="29" 
+              dominantBaseline="middle" 
+              textAnchor="middle" 
+              className="text-[3rem] font-semibold fill-black pointer-events-none"
+            >
+              A
+            </text>
+          );
+        }
+        break;
+      case 14: // Diente fracturado
+        if (segmento) {
+          fullToothMark = (
+            <svg width="42" height="45" viewBox="0 0 25 45" className="">
+              <polyline
+                points="28,4 5,8 28,16 5,24 28,32 5,40 28,44"
+                strokeWidth="3"
+                fill="none"
+                className="stroke-red-500 pointer-events-none"
+              />
+            </svg>
           );
         }
         break;
@@ -332,44 +380,10 @@ export function Odontodiagrama({
           d={getSegmentPath(segmento)}
           onClick={() => cambiarSegmento(sector, index, segmento)}
         />
-        {additionalElements}
-        {fullToothMark}
         {outerCircle}
+        {fullToothMark}
       </Fragment>
     );
-  };
-
-  const renderEndodoncia = (segmento: number, color: string) => {
-    const colorClass = color === "blue" ? "fill-blue-600" : "fill-red-500";
-    
-    // Segmentos superiores (2,3) - línea vertical "|"
-    if (segmento === 5 || segmento === 3) {
-      return (
-        <text 
-          x="25" 
-          y={segmento === 5 ? "0" : "50"}
-          dominantBaseline="middle" 
-          textAnchor="middle" 
-          className={`text-md font-bold ${colorClass} pointer-events-none`}
-        >
-          |
-        </text>
-      );
-    }
-    // Segmentos restantes (1,4,5) - línea horizontal "—"
-    else {
-      return (
-        <text 
-          x={segmento === 4 ? "0" : segmento === 2 ? "50" : "25"}
-          y="25" 
-          dominantBaseline="middle" 
-          textAnchor="middle" 
-          className={`text-md font-bold ${colorClass} pointer-events-none`}
-        >
-          —
-        </text>
-      );
-    }
   };
 
   // Render de un diente completo
@@ -380,7 +394,7 @@ export function Odontodiagrama({
   return (
     <div key={`tooth-${toothKey}`} className="relative">
       <div className="text-center text-xs mb-1 font-medium text-gray-700">
-        {`${sector}-${index + 1}`} {/* Muestra "sector-númerodiente" */}
+        {`${sector}${index + 1}`} {/* Muestra "sector-diente" */}
       </div>
       <svg 
         width="60" 
@@ -407,153 +421,144 @@ export function Odontodiagrama({
         {!readOnly && (
           <button
             type="button"
-            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs"
+            className="w-3 h-3 absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-500 text-white rounded-full flex items-center justify-center text-xs"
             onClick={() => eliminarDiente(sector, index)}
           >
             ×
           </button>
+
         )}
       </div>
     );
   };
 
-  // Render de un sector
-  const renderSector = (sector: number, data: SectorData) => {
-    // Determinar si es sector izquierdo para invertir orden de dientes
-    const isLeftSector = [1, 4, 5, 8].includes(sector);
-    const dientes = data.dientes;
-    const total = data.dientes.length;
-
-    let title = `Sector ${sector}`;
-    if (sector === 1) title += " - Permanente Superior Derecho";
-    if (sector === 2) title += " - Permanente Superior Izquierdo";
-    if (sector === 3) title += " - Permanente Inferior Izquierdo";
-    if (sector === 4) title += " - Permanente Inferior Derecho";
-    if (sector === 5) title += " - Temporal Superior Derecho";
-    if (sector === 6) title += " - Temporal Superior Izquierdo";
-    if (sector === 7) title += " - Temporal Inferior Izquierdo";
-    if (sector === 8) title += " - Temporal Inferior Derecho";
-
-    return (
-      <div className="border p-4 rounded-md" key={sector}>
-        <div className="flex justify-between items-center mb-2">
-          <h3 className="font-medium mb-7">{title}</h3>
-          {!readOnly && (
-            <Button
-              className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
-              onClick={() => agregarDiente(sector)}
-            >
-              Agregar Diente
-            </Button>
-          )}
-        </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: isLeftSector ? "row-reverse" : "row",
-            gap: "1em",
-            justifyContent: isLeftSector ? "flex-start" : "flex-start",
-            flexWrap: "wrap",
-          }}
-        >
-          {dientes.map((d, idx) => {
-            const originalIdx = idx;
-            return renderDiente(sector, data.dientes[originalIdx], originalIdx);
-          })}
-        </div>
-      </div>
-    );
-  };
   return (
     <div className="space-y-8">
       {!readOnly && (
-        <div className="mb-6 p-4 bg-white rounded-lg border border-gray-300">
-          <h3 className="font-medium mb-3 text-gray-700">Estado dental seleccionado:</h3>
-          
+        <div className="mb-6 p-8 bg-white rounded-lg border border-gray-300">
           <div className="grid grid-cols-5 gap-3">
             {[
-              { v: 0, title: "Sin revisar", bg: "bg-white", border: "border-gray-300" },
-              { v: 1, title: "Caries", bg: "bg-red-500", border: "border-red-600" },
-              { v: 2, title: "Restauración", bg: "bg-blue-600", border: "border-blue-700" },
+              { 
+                v: 0, 
+                title: "Sin revisar", 
+                bg: "bg-white", 
+                border: "border-gray-300" },
+              { 
+                v: 1, 
+                title: "Caries", 
+                bg: "bg-red-500", 
+                border: "border-red-600" },
+              { 
+                v: 2, 
+                title: "Restauración", 
+                bg: "bg-blue-600", 
+                border: "border-blue-700" },
               { 
                 v: 3, 
                 title: "Rest. Defectuosa", 
                 bg: "bg-blue-600", 
                 border: "border-red-600"
               },
-              { v: 4, title: "Ausente", bg: "bg-gray-800", border: "border-gray-900" },
               { 
-                v: 5, 
+                v: 4, 
                 title: "Exodoncia Realizada", 
                 bg: "bg-blue-600", 
                 border: "border-blue-700",
                 text: "X"
               },
               { 
-                v: 6, 
+                v: 5, 
                 title: "Exodoncia Indicada", 
                 bg: "bg-red-500", 
                 border: "border-red-600",
                 text: "X"
               },
               { 
-                v: 7, 
+                v: 6, 
                 title: "Endodoncia Realizada", 
                 bg: "bg-blue-600", 
                 border: "border-blue-700",
-                text: "—"
+                text: "|"
               },
               { 
-                v: 8, 
+                v: 7, 
                 title: "Endodoncia Indicada", 
                 bg: "bg-red-500", 
                 border: "border-red-600",
-                text: "—"
+                text: "|"
               },
               { 
-                v: 9, 
+                v: 8, 
                 title: "Corona/Prótesis Fija", 
                 bg: "bg-blue-400", 
                 border: "border-blue-500"
               },
               { 
-                v: 10, 
+                v: 9, 
                 title: "Corona/Prótesis Indicada", 
                 bg: "bg-red-300", 
                 border: "border-red-400"
               },
               { 
-                v: 11, 
+                v: 10, 
                 title: "Diente en Erupción", 
                 bg: "bg-white", 
                 border: "border-blue-500 border-2"
               },
               { 
-                v: 12, 
+                v: 11, 
                 title: "Erupción con Inflamación", 
                 bg: "bg-white", 
                 border: "border-red-500 border-2"
               },
               { 
-                v: 13, 
+                v: 12, 
                 title: "Diente Sano", 
                 bg: "bg-white", 
                 border: "border-gray-300",
                 text: "S",
                 textColor: "text-blue-600"
               },
-            ].map(({ v, title, bg, border, text, textColor = "text-white" }) => (
+              { 
+                v: 13, 
+                title: "Diente Ausente", 
+                bg: "bg-white", 
+                border: "border-gray-300",
+                text: "A",
+                textColor: "text-black"
+              },
+              { 
+                v: 14, 
+                title: "Diente Fracturado", 
+                bg: "bg-white", 
+                border: "border-gray-300",
+                svg: (
+                  <svg width="24" height="40" viewBox="0 0 24 40" className="w-4 h-6">
+                    <polyline
+                      points="25,1 0,4 25,12 0,20 25,28 0,36 25,39"
+                      stroke="red"
+                      strokeWidth="3"
+                      fill="none"
+                    />
+                  </svg>
+                )
+              },
+            ].map(({ v, title, bg, border, text, svg, textColor = "text-white" }) => (
               <div key={v} className="flex flex-col items-center">
                 <button
                   type="button"
-                  className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-all ${
-                    valorSeleccionado === v ? "ring-2 ring-offset-2 ring-blue-500" : ""
-                  } ${bg} ${border}`}
+                  className={`relative w-10 h-10 rounded-full border-2 flex items-center justify-center overflow-hidden transition-all
+                    ${valorSeleccionado === v ? "ring-2 ring-offset-2 ring-blue-500" : ""}
+                    ${bg} ${border}`}
                   onClick={() => setValorSeleccionado(v)}
                   title={title}
                 >
                   {text && (
                     <span className={`text-lg font-bold ${textColor}`}>{text}</span>
+                  )}
+
+                  {svg && (
+                    <span className="w-full h-full flex items-center justify-center">{svg}</span>
                   )}
                 </button>
                 <span className="text-xs text-center mt-1 text-gray-600">{title}</span>
@@ -564,16 +569,16 @@ export function Odontodiagrama({
       )}
       <div className="border border-gray-300 bg-white rounded-lg p-4">
         {/* Cuadrante Superior */}
-        <div className="flex border-b border-dashed">
+        <div className="flex border-b border-dashed border-gray-300">
           {/* Cuadrante Superior Izquierdo */}
-          <div className="w-1/2 border-r border-dashed py-5 px-8">
+          <div className="w-1/2 border-r border-dashed border-gray-300 py-5 px-8">
             <div className="flex justify-start items-center mb-2">
               {!readOnly && (
                 <Button
-                  className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
+                  className="w-8 h-8 text-md rounded-full border border-gray-300 mb-4 hover:bg-gray-500 hover:text-white flex items-center justify-center"
                   onClick={() => agregarDiente(1)}
                 >
-                  Agregar Diente
+                  +
                 </Button>
               )}
             </div>
@@ -587,10 +592,10 @@ export function Odontodiagrama({
               <div className="flex justify-between items-center mb-2">
                 {!readOnly && (
                   <Button
-                    className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
+                    className="w-8 h-8 text-md rounded-full border border-gray-300 mb-4 hover:bg-gray-500 hover:text-white flex items-center justify-center"
                     onClick={() => agregarDiente(5)}
                   >
-                    Agregar Diente
+                    +
                   </Button>
                 )}
               </div>
@@ -603,14 +608,14 @@ export function Odontodiagrama({
           </div>
 
           {/* Cuadrante Superior Derecho */}
-          <div className="w-1/2 border-l border-dashed py-5 px-8">
+          <div className="w-1/2 border-l border-dashed border-gray-300 py-5 px-8">
             <div className="flex justify-end items-center mb-2">
               {!readOnly && (
                 <Button
-                  className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
+                  className="w-8 h-8 text-md rounded-full border border-gray-300 mb-4 hover:bg-gray-500 hover:text-white flex items-center justify-center"
                   onClick={() => agregarDiente(2)}
                 >
-                  Agregar Diente
+                  +
                 </Button>
               )}
             </div>
@@ -624,10 +629,10 @@ export function Odontodiagrama({
               <div className="flex justify-end items-center mb-2">
                 {!readOnly && (
                   <Button
-                    className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
+                    className="w-8 h-8 text-md rounded-full border border-gray-300 mb-4 hover:bg-gray-500 hover:text-white flex items-center justify-center"
                     onClick={() => agregarDiente(6)}
                   >
-                    Agregar Diente
+                    +
                   </Button>
                 )}
               </div>
@@ -641,16 +646,16 @@ export function Odontodiagrama({
         </div>
 
         {/* Cuadrante Inferior */}
-        <div className="flex border-t border-dashed">
+        <div className="flex border-t border-dashed border-gray-300">
           {/* Cuadrante Inferior Izquierdo */}
-          <div className="w-1/2 border-r border-dashed py-5 px-8">
+          <div className="w-1/2 border-r border-dashed border-gray-300 py-5 px-8">
             <div className="flex justify-start items-center mb-2">
               {!readOnly && (
                 <Button
-                  className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
+                  className="w-8 h-8 text-md rounded-full border border-gray-300 mb-4 hover:bg-gray-500 hover:text-white flex items-center justify-center"
                   onClick={() => agregarDiente(8)}
                 >
-                  Agregar Diente
+                  +
                 </Button>
               )}
             </div>
@@ -664,10 +669,10 @@ export function Odontodiagrama({
               <div className="flex justify-start items-center mb-2">
                 {!readOnly && (
                   <Button
-                    className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
+                    className="w-8 h-8 text-md rounded-full border border-gray-300 mb-4 hover:bg-gray-500 hover:text-white flex items-center justify-center"
                     onClick={() => agregarDiente(4)}
                   >
-                    Agregar Diente
+                    +
                   </Button>
                 )}
               </div>
@@ -680,14 +685,14 @@ export function Odontodiagrama({
           </div>
 
           {/* Cuadrante Inferior Derecho */}
-          <div className="w-1/2 border-l border-dashed py-5 px-8">
+          <div className="w-1/2 border-l border-dashed border-gray-300 py-5 px-8">
             <div className="flex justify-end items-center mb-2">
               {!readOnly && (
                 <Button
-                  className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
+                  className="w-8 h-8 text-md rounded-full border border-gray-300 mb-4 hover:bg-gray-500 hover:text-white flex items-center justify-center"
                   onClick={() => agregarDiente(7)}
                 >
-                  Agregar Diente
+                  +
                 </Button>
               )}
             </div>
@@ -702,10 +707,10 @@ export function Odontodiagrama({
                 {!readOnly && (
                   <div className="flex items-center">
                   <Button
-                    className="rounded-full border border-gray-300 mb-2 hover:bg-gray-500 hover:text-white"
+                    className="w-8 h-8 text-md rounded-full border border-gray-300 mb-4 hover:bg-gray-500 hover:text-white flex items-center justify-center"
                     onClick={() => agregarDiente(3)}
                   >
-                    Agregar Diente
+                    +
                   </Button>
                   </div>
                 )}

@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import HeaderC from "@/components/headerC";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
 export default function DashboardA() {
     // Router
     const router = useRouter();

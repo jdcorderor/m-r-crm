@@ -1,7 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import HeaderB from "@/components/headerB"
 import Button from "@/components/ui/button"
 import Input from "@/components/ui/input"
 import Loading from "@/components/loading"
@@ -171,7 +170,6 @@ export default function Users() {
             {!isLoading && (
                 <div>
                     {/* Header */}
-                    <HeaderB />
                     <main className="w-full px-[5vw] pt-8">
                         <span className="block text-gray-800 text-2xl font-semibold mb-6">Buscar Paciente</span>
                         <div className="bg-white py-1">

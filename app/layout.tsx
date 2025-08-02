@@ -7,7 +7,6 @@ const inter = Inter({ subsets: ["latin"], preload: true });
 export const metadata: Metadata = {
   title: "Mavarez & Román",
   description: "Sistema CRM para la gestión interna de un consultorio odontológico",
-
 };
 
 export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode }>) {
