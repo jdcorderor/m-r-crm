@@ -1,11 +1,10 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import HeaderB from "@/components/headerB"
 import Button from "@/components/ui/button"
 import Input from "@/components/ui/input"
 import Loading from "@/components/loading"
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import { HousePlus, Eye } from "lucide-react"
 
 export default function Users() {
     // Router
@@ -203,11 +202,11 @@ export default function Users() {
                                                             onClick={() => {setPacienteDettales(paciente);
                                                                             setverPaciente(true);
                                                             }}> 
-                                                        <i className="bi bi-eye"></i>
+                                                        <Eye className="h-5 w-5"/>
                                                     </button>
                                                     <button className="text-green-600 hover:text-green-800 p-1 rounded disabled:opacity-50 cursor-pointer" title="Atender"
                                                             onClick={() => router.push(`/especialista/pacientes/${paciente.codigo}`)}>
-                                                        <i className="bi bi-house-add"></i>
+                                                        <HousePlus className="h-5 w-5"/>
                                                     </button>
                                                 </td>
                                             </tr>
@@ -249,7 +248,7 @@ export default function Users() {
                                     </Button>
                                     <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
                                             onClick={() => {if (PacienteDettales && PacienteDettales.codigo) {
-                                            router.push(`/especialista/pacientes/historia_pagos/${PacienteDettales.codigo}`)
+                                            router.push(`/especialista/ingresos/historia_pagos/${PacienteDettales.codigo}`)
                                             }}}>
                                         Historia de Pagos
                                     </Button>

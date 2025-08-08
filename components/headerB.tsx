@@ -15,6 +15,7 @@ export default function HeaderB() {
   const routes = [
     { href: "/especialista/pacientes", label: "Pacientes" },
     { href: "/especialista/calendario", label: "Calendario" },
+    { href: "/especialista/ingresos", label: "Ingresos" },
     { href: "/especialista/archivos", label: "Archivos" },
     { href: "/especialista/reportes", label: "Reportes" },
     { href: "/especialista/micuenta", label: "Mi cuenta" },

@@ -119,10 +119,25 @@ const PacientePage = () => {
         let pagos = consulta.pagos?.reduce((acumulador, valorActual) => acumulador + valorActual, 0) || 0;
         saldoPaciente += (pagos - precio)
     })
-
+    
     // State variable for loading view
     const [isLoading, setIsLoading] = useState(true);
     const [modalNuevoPago, setmodalNuevoPago] = useState(false);
+    
+    // variables para visualizar los datos pendientes
+    const [verPendientes, setVerPendientes] = useState(false);
+    
+    const consultasFiltro = consultas.filter((consulta) => {
+        if (verPendientes) {
+            let precio = consulta.precio?.reduce((acumulador, valorActual) => acumulador + valorActual, 0) || 0;
+            let pagos = consulta.pagos?.reduce((acumulador, valorActual) => acumulador + valorActual, 0) || 0;
+            if (precio > pagos) {
+                return consulta
+            }
+        } else {
+            return consulta
+        }
+    });
 
     useEffect(() => { // Esto debe ir en el GET
         setIsLoading(false);
@@ -180,14 +195,24 @@ const PacientePage = () => {
                                             saldoPaciente < 0 ? <span className="font-bold text-red-700 ">Deuda Pendiente: <span>{saldoPaciente * -1}</span></span> : 
                                             <span className="font-bold text-green-700">Deuda Pendiente: <span>{saldoPaciente}</span></span>}
                                         </p>
+                                        <Button className="rounded-full border border-gray-300 self-end"
+                                            onClick={() => {setmodalNuevoPago(true)}}>
+                                            Registrar Abono
+                                        </Button>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="my-10">
-                                <h2 className="block text-2xl font-bold text-gray-800 mb-4">Consultas Realizadas</h2>
+                                <div className="flex flex-row justify-between">
+                                    <h2 className="block text-2xl font-bold text-gray-800 mb-4">Consultas Realizadas</h2>
+                                    <Button className={`rounded-full border border-gray-100 text-white self-end focus:outline-none ${verPendientes ? "bg-red-500 hover:bg-red-400" : "bg-red-400 hover:bg-red-500"}`}
+                                        onClick={() => {verPendientes ? setVerPendientes(false) : setVerPendientes(true)}}>
+                                        Ver Pendientes
+                                    </Button>
+                                </div>
                                 <div className="flex flex-col w-full justify-center gap-8 my-6">
-                                    { consultas.map((consulta) => {
+                                    { consultasFiltro.map((consulta) => {
                                         const PrecioTotal = consulta.precio?.reduce((acumulador, valorActual) => acumulador + valorActual, 0) || 0;
                                         const PagosTotal = consulta.pagos?.reduce((acumulador, valorActual) => acumulador + valorActual, 0) || 0;
                                         return (
@@ -228,23 +253,23 @@ const PacientePage = () => {
                     <div className="w-full flex flex-col mb-4">
                         <div className="flex flex-col">
                             <label className="text-gray-700 mb-2 font-semibold">Monto:</label>
-                            <Input type="number"></Input>
+                            <Input type="number" className=" border border-gray-300 shadow-sm"></Input>
                         </div>
                         <div className="flex flex-col">
                             <label className="text-gray-700 mb-2 font-semibold">Fecha:</label>
-                            <Input type="date"></Input>
+                            <Input type="date" className=" border border-gray-300 shadow-sm"></Input>
                         </div>
                         <div className="flex flex-col">
                             <label className="text-gray-700 mb-2 font-semibold">Método:</label>
-                            <Input type="text"></Input>
+                            <Input type="text" className=" border border-gray-300 shadow-sm"></Input>
                         </div>
                         <div className="flex flex-col">
                             <label className="text-gray-700 mb-2 font-semibold">Referencia:</label>
-                            <Input type="text"></Input>
+                            <Input type="text" className=" border border-gray-300 shadow-sm"></Input>
                         </div>
                         <div className="flex flex-col">
                             <label className="text-gray-700 mb-2 font-semibold">Código:</label>
-                            <Input type="text"></Input>
+                            <Input type="text" className=" border border-gray-300 shadow-sm"></Input>
                         </div>
                     </div>
                     <Button className="bg-green-500 hover:bg-green-600 text-white border border-gray-300 p-3 px-5 rounded rounded-full "

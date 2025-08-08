@@ -116,6 +116,12 @@ const PacientePage = () => {
                 {!isLoading && (
                     <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
                         <main className="w-full">
+                            <div className="flex flex-row w-full justify-start">
+                                <Button className="bg-gray-300 rounded-full"
+                                        onClick = {() => {window.history.back()}}>
+                                    Volver
+                                </Button>
+                            </div>
                             <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">
                                 Detalles del Paciente
                             </h1>
@@ -158,7 +164,7 @@ const PacientePage = () => {
                                     </Button>
                                     <Button
                                         className="px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
-                                        onClick={() => {router.push(`/especialista/pacientes/historia_pagos/${id}`)}}>
+                                        onClick={() => {router.push(`/especialista/ingresos/historia_pagos/${id}`)}}>
                                         Historia Pagos
                                     </Button>
                                     <Button
