@@ -27,7 +27,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{u
             INNER JOIN pacientes p ON c.paciente_id = p.id
             INNER JOIN historias h ON p.id = h.paciente_id
             WHERE u.usuario = $1 AND c.estado = 'confirmada'
-            ORDER BY c.fecha DESC;
+            ORDER BY c.fecha ASC;
         `;
 
         const results = await client.query(query, [user]);

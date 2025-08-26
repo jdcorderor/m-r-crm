@@ -26,7 +26,7 @@ export async function GET(): Promise<NextResponse> {
             INNER JOIN historias h ON p.id = h.paciente_id
             INNER JOIN odontologos o ON c.odontologo_id = o.id
             WHERE c.estado = 'confirmada'
-            ORDER BY c.fecha DESC;
+            ORDER BY c.fecha ASC;
         `;
 
         const results = await client.query(query);
