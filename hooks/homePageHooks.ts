@@ -1,7 +1,7 @@
 // Format date to a readable string
 import { DateTime } from 'luxon';
 
-export function formatDateFlexible(input: string): string {
+export function formatDate(input: string): string {
   const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(input);
   const zone = 'America/Caracas';
 
