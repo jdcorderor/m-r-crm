@@ -108,6 +108,8 @@ export default function Page() {
     // Verify user variable
     if (user.username === "" && user.role === "") return null;
 
+    console.log(PatientDetails);
+
     return (
         <section>
             {isLoading && (
