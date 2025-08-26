@@ -1,22 +1,16 @@
 // Format date to a readable string
-import { DateTime } from 'luxon';
-
 export function formatDate(input: string): string {
-  const zone = 'America/Caracas';
+  // Detecta si es una fecha con hora vacía (T00:00:00.000Z)
+  if (/T00:00:00(\.000)?Z$/.test(input)) {
+    const [datePart] = input.split('T');
+    const [year, month, day] = datePart.split('-');
+    return `${day}/${month}/${year}`;
+  }
 
-  // Detecta si es solo fecha (sin hora)
-  const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(input);
+  // Asume formato ISO válido con hora
+  const match = input.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/);
+  if (!match) return input; // fallback si no coincide
 
-  const date = isDateOnly
-    ? DateTime.fromObject(
-        {
-          year: +input.slice(0, 4),
-          month: +input.slice(5, 7),
-          day: +input.slice(8, 10),
-        },
-        { zone }
-      )
-    : DateTime.fromISO(input, { zone: 'utc' }).setZone(zone);
-
-  return date.toFormat(isDateOnly ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm');
+  const [, year, month, day, hour, minute] = match;
+  return `${day}/${month}/${year}, ${Number(hour) - 4}:${minute}`;
 }
