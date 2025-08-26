@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { Client } from 'pg';
 
 // GET Route
-export async function GET(request: NextRequest, { params }: { params: { username: number } }): Promise<NextResponse> {
+export async function GET(request: NextRequest, { params }: { params: Promise<{username: number}> }): Promise<NextResponse> {
     const client = new Client({
         connectionString: process.env.DATABASE_URL,
     });
