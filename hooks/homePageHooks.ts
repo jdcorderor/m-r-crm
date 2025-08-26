@@ -9,5 +9,5 @@ export function formatDate(input: string): string {
     ? DateTime.fromFormat(input, 'yyyy-MM-dd', { zone, setZone: true })
     : DateTime.fromISO(input, { zone: 'utc' }).setZone(zone);
 
-  return date.toFormat(isDateOnly ? 'dd/MM/yyyy' : 'dd/MM/yyyy HH:mm');
+  return date.toFormat(isDateOnly ? 'dd/MM/yyyy' : 'dd/MM/yyyy, HH:mm');
 }
