@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Input from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import HeaderC from "@/components/headerC";
+import Link from "next/link";
 
 export default function Page() {
     // Router
@@ -136,7 +137,7 @@ export default function Page() {
                     <Input id="new-password-repeated" className="border-gray-300" type="password" required placeholder="Contraseña nueva (confirmación)" value={newPasswordRepeated ?? ""} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewPasswordRepeated(e.target.value)}/>
                   </div>
                   <div className="flex flex-col text-xs my-2">
-                    <span className="block mx-auto font-semibold"><a href="/recuperar-credenciales" className="hover:underline">¿Olvidaste tu contraseña?</a></span>
+                    <span className="block mx-auto font-semibold"><Link href="/recuperar-credenciales" className="hover:underline">¿Olvidaste tu contraseña?</Link></span>
                   </div>
                 </div>
 

@@ -203,7 +203,7 @@ export default function Page() {
                     <div className="w-full max-w-4xl bg-gray-50 border border-gray-200 rounded-lg my-10">
 
                         <div className="relative top-0">
-                            <Button className="absolute top-3 left-2 shadow-none rounded-full"onClick={() => router.push("/especialista/pacientes")}>
+                            <Button className="absolute top-3 left-2 shadow-none rounded-full"onClick={() => { if (diagnosis.length === 0 && treatment.length === 0) { router.push("/especialista/pacientes") }} }>
                                 <X className="text-gray-500 w-5 h-5" />
                             </Button>
                         </div>
