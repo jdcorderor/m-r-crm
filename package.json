@@ -53,5 +53,9 @@
     "eslint-config-next": "15.3.3",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "browser": {
+    "utf-8-validate": false,
+    "bufferutil": false
   }
 }
