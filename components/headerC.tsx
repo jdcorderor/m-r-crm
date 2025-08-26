@@ -15,7 +15,7 @@ export default function HeaderC() {
   const routes = [
     { href: "/administrador/usuarios", label: "Usuarios" },
     { href: "/administrador/ingresos", label: "Ingresos" },
-    { href: "/administrador/datos", label: "Datos básicos" },
+    { href: "/administrador/datos-basicos", label: "Datos básicos" },
     { href: "/administrador/micuenta", label: "Mi cuenta" },
   ]
 

@@ -2,13 +2,12 @@
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { getAllUsers } from "@/app/services/allUsersService"
-import HeaderC from "@/components/headerC"
 import Button from "@/components/ui/button"
 import Loading from "@/components/loading"
-import { X } from "lucide-react"
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import HeaderC from "@/components/headerC"
+import { X, Pencil, Trash } from "lucide-react"
 
-export default function Users() {
+export default function Page() {
     // Router
     const router = useRouter();
     
@@ -89,7 +88,7 @@ export default function Users() {
     // User deletion handler
     async function handleUserDeletion(key: string) {
         try {
-            const response = await fetch("/api/users", {
+            const response = await fetch("/api/administrator/users", {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -128,7 +127,6 @@ export default function Users() {
             
             {!isLoading && (
                 <div>
-                    {/* Header */}
                     <HeaderC />
 
                     {/* Users table */}
@@ -155,10 +153,10 @@ export default function Users() {
                                                 <td className="px-4 py-2 capitalize">{u.role}</td>
                                                 <td className="px-4 py-2 flex gap-2">
                                                     <button className="text-blue-600 hover:text-blue-800 p-1 rounded disabled:opacity-50 cursor-pointer" title="Editar" disabled={u.role === "administrador"} onClick={() => { if (u.role !== "administrador") { router.push(`/administrador/usuarios/actualizacion/${(u.role === "general") ? "especialista" : "auxiliar"}/${u.username}`); } }}> 
-                                                        <i className="bi bi-pencil-square"></i>
+                                                        <Pencil className="w-4 h-4"></Pencil>
                                                     </button>
                                                     <button className="text-red-600 hover:text-red-800 p-1 rounded disabled:opacity-50 cursor-pointer" title="Eliminar" disabled={u.role === "administrador"} onClick={async () => { if (u.role !== "administrador") { await handleUserDeletion(u.username);} }}>
-                                                        <i className="bi bi-trash"></i>
+                                                        <Trash className="w-4 h-4"></Trash>
                                                     </button>
                                                 </td>
                                             </tr>

@@ -87,15 +87,15 @@ export default function Login() {
       <main className="w-full mt-32">
         <div className="flex flex-col items-center">
           <span className="text-4xl text-gray-800 font-semibold mb-8">Mavarez & Román</span>
-          <form onSubmit={handleLogin} className="w-full max-w-[350px]">
+          <form onSubmit={handleLogin} className="w-full max-w-[350px] text-sm space-y-6">
 
-            <div className="mb-6">
-              <label htmlFor="username" className="pl-2 pb-2 block">Usuario *</label>
+            <div className="space-y-1">
+              <label htmlFor="username" className="block font-medium">Usuario *</label>
               <Input type="text" name="username" id="username" className="block w-full border-gray-300" onChange={handleChange} value={credentials.username} placeholder="Usuario" autoComplete="username" />
             </div>
 
-            <div className="mb-6">
-              <label htmlFor="password" className="pl-2 pb-2 block">Contraseña *</label>
+            <div className="space-y-1">
+              <label htmlFor="password" className="block font-medium">Contraseña *</label>
               <Input type="password" name="password" id="password" className="block w-full border-gray-300" onChange={handleChange} value={credentials.password} placeholder="Contraseña" autoComplete="current-password"/>
             </div>
 
@@ -103,7 +103,7 @@ export default function Login() {
 
             <Button type="submit" className="w-full bg-gray-100 border-3 border-gray-400 text-gray-800 font-semibold py-2 rounded-[5vw] shadow-sm hover:bg-gray-200 transition duration-200">Iniciar sesión</Button>
           </form>
-          <a href="#" className="mt-6 text-sm" style={{ textDecoration: 'none', color: 'rgb(104, 104, 104)' }}>¿Olvidó su contraseña?</a>
+          <a href="#" className="mt-6 text-xs text-gray-600 hover:underline">¿Olvidó su contraseña?</a>
         </div>
       </main>
     </section>

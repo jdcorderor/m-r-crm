@@ -1,5 +1,5 @@
 export async function getAllUsers() {
-    const response = await fetch("/api/users/all", {
+    const response = await fetch("/api/administrator/users/all", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

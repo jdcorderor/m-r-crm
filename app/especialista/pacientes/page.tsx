@@ -4,9 +4,13 @@ import { useRouter } from "next/navigation"
 import Button from "@/components/ui/button"
 import Input from "@/components/ui/input"
 import Loading from "@/components/loading"
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import HeaderB from "@/components/headerB"
+import { Eye, House } from "lucide-react"
+import { Paciente } from "@/app/types/patient"
+import { formatDate } from "@/hooks/homePageHooks"
+import calculateAge from "@/app/services/calculateAge"
 
-export default function Users() {
+export default function Page() {
     // Router
     const router = useRouter();
 
@@ -50,115 +54,59 @@ export default function Users() {
     // State variable for loading view
     const [isLoading, setIsLoading] = useState(true);
 
-
     // ---------------------------------------------------------------------------
-    type Paciente = {
-        codigo?: number;
-        cedula?: string;
-        nombre: string;
-        fecha_nacimiento: string;
-    }
-    const [verPaciente, setverPaciente] = useState<boolean>(false);
-    const [PacienteDettales, setPacienteDettales] = useState<Paciente | null>(null);
 
-    const pacientesMock = [
-        {
-            "codigo": 1001,
-            "cedula": "12345678",
-            "nombre": "Ana González",
-            "fecha_nacimiento": "1990-03-12"
-        },
-        {
-            "codigo": 1002,
-            "cedula": "23456789",
-            "nombre": "Carlos Pérez",
-            "fecha_nacimiento": "1985-07-22"
-        },
-        {
-            "codigo": 1003,
-            "cedula": "34567890",
-            "nombre": "María Rodríguez",
-            "fecha_nacimiento": "2000-11-02"
-        },
-        {
-            "codigo": 1004,
-            "cedula": "45678901",
-            "nombre": "Luis Ramírez",
-            "fecha_nacimiento": "1978-01-18"
-        },
-        {
-            "codigo": 1005,
-            "cedula": "56789012",
-            "nombre": "Juliana Herrera",
-            "fecha_nacimiento": "1996-09-05"
-        },
-        {
-            "codigo": 1006,
-            "cedula": "67890123",
-            "nombre": "Santiago Ortega",
-            "fecha_nacimiento": "1989-06-30"
-        },
-        {
-            "codigo": 1007,
-            "cedula": "78901234",
-            "nombre": "Raquel Medina",
-            "fecha_nacimiento": "1993-12-21"
-        },
-        {
-            "codigo": 1008,
-            "cedula": "89012345",
-            "nombre": "Esteban Castillo",
-            "fecha_nacimiento": "1980-04-15"
-        },
-        {
-            "codigo": 1009,
-            "cedula": "90123456",
-            "nombre": "Natalia Lugo",
-            "fecha_nacimiento": "2002-08-10"
-        },
-        {
-            "codigo": 1010,
-            "cedula": "01234567",
-            "nombre": "Javier Suárez",
-            "fecha_nacimiento": "1995-05-27"
-        },
-        {
-            "codigo": 9000,
-            "cedula": "32067861",
-            "nombre": "Nelson Guerrero",
-            "fecha_nacimiento": "2007-01-08"
-        },
-    ]
+    // State variables for patient details
+    const [patients, setPatients] = useState<Paciente[]>([])
+    const [seePatient, setSeePatient] = useState<boolean>(false);
+    const [PatientDetails, setPatientDetails] = useState<Paciente | null>(null);
+
+    // State variables for search bar
     const [searchTerm, setSearchTerm] = useState("");
 
-    const pacientesFiltrados = pacientesMock.filter((paciente) => {
-        const nombre = paciente.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        const cedula = paciente.cedula?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") || "";
-        const id = paciente.codigo?.toString() || "";
-        const termino = searchTerm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        return nombre.includes(termino) || cedula.includes(termino) || id.includes(termino);
-    });
+    // ---------------------------------------------------------------------------
 
+    // Get patients data from the DB using fetch
+    useEffect(() => {
+        const fetchPatients = async () => {
+            try {
+                const response = await fetch("/api/specialist/patients", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                });
 
-    useEffect(() => { // Esto debe ir en el GET
-        setIsLoading(false);
+                if (!response.ok) {
+                    throw new Error(`Error ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                setPatients(data);
+                setIsLoading(false);
+            } catch (error) {
+                console.error("Error al obtener pacientes:", error);
+            }
+        };
+
+        fetchPatients();
     }, []);
 
+    // Filtered patients
+    const filteredPatients = patients.filter((p) => {
+        const nombre = p.nombre.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const apellido = p.apellido.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        const cedula = p.cedula?.toString() || "";
+        const id = p.codigo?.toString() || "";
+        const termino = searchTerm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        return nombre.includes(termino) || apellido.includes(termino) || cedula.includes(termino) || id.includes(termino);
+    });
 
-    const calcularEdad = (fecha: string) => {
-        const nacimiento = new Date(fecha);
-        const hoy = new Date();
-        let edad = hoy.getFullYear() - nacimiento.getFullYear();
-        const m = hoy.getMonth() - nacimiento.getMonth();
-        if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
-            edad--;
-        }
-        return edad;
-    };
+    // --------------------------------------------------------------------------
+
     // Verify user variable
     if (user.username === "" && user.role === "") return null;
-
-
 
     return (
         <section>
@@ -170,118 +118,141 @@ export default function Users() {
 
             {!isLoading && (
                 <div>
-                    {/* Header */}
+                    <HeaderB />
                     <main className="w-full px-[5vw] pt-8">
-                        <span className="block text-gray-800 text-2xl font-semibold mb-6">Buscar Paciente</span>
-                        <div className="bg-white py-1">
-                            <Input className="border border-gray-300 font-medium"
-                                placeholder="1234567 / Pedro Peréz"
-                                type="text"
-                                value={searchTerm}
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}>
-                            </Input>
-                            <div className={`overflow-x-auto duration-500 ${verPaciente ? "max-h-[20vh]" : "max-h-[60vh]"}`}>
+                        <span className="block text-gray-800 text-2xl font-semibold mb-6">Pacientes</span>
+                        <div className="bg-white py-1 space-y-2">
+                            <Input className="border border-gray-300 text-sm font-medium shadow-none" placeholder="ej. Pedro Pérez | 12345678" type="text" value={searchTerm} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchTerm(e.target.value)}></Input>
+                            <div className={`overflow-x-auto duration-500 ${seePatient ? "max-h-[20vh]" : "max-h-[60vh]"}`}>
                                 <table className="min-w-full divide-y divide-gray-200">
                                     <thead className="sticky top-0 bg-gray-100">
                                         <tr>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">#</th>
-                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Cédula</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">N° Historia</th>
+                                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Cédula de Identidad</th>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Paciente</th>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Edad</th>
                                             <th className="px-4 py-2 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {pacientesFiltrados.map((paciente) => (
+                                        {filteredPatients.map((paciente) => (
                                             <tr key={paciente.nombre} className="hover:bg-gray-50 text-sm">
                                                 <td className="px-4 py-2">{paciente.codigo || "-"}</td>
                                                 <td className="px-4 py-2">{paciente.cedula || "-"}</td>
-                                                <td className="px-4 py-2">{paciente.nombre || "-"}</td>
-                                                <td className="px-4 py-2">{calcularEdad(paciente.fecha_nacimiento)}</td>
+                                                <td className="px-4 py-2">{paciente.nombre || "-"} {paciente.apellido || "-"}</td>
+                                                <td className="px-4 py-2">{calculateAge(paciente.fecha_nacimiento)}</td>
                                                 <td className="px-4 py-2 flex gap-2">
                                                     <button className="text-blue-600 hover:text-blue-800 p-1 rounded disabled:opacity-50 cursor-pointer" title="Ver Detalles"
                                                         onClick={() => {
-                                                            setPacienteDettales(paciente);
-                                                            setverPaciente(true);
+                                                            setPatientDetails(paciente);
+                                                            setSeePatient(true);
                                                         }}>
-                                                        <i className="bi bi-eye"></i>
+                                                        <Eye className="w-4 h-4"></Eye>
                                                     </button>
                                                     <button className="text-green-600 hover:text-green-800 p-1 rounded disabled:opacity-50 cursor-pointer" title="Atender"
                                                         onClick={() => router.push(`/especialista/pacientes/${paciente.codigo}`)}>
-                                                        <i className="bi bi-house-add"></i>
+                                                        <House className="w-4 h-4"></House>
                                                     </button>
                                                 </td>
                                             </tr>
                                         ))}
+
+                                        {(patients.length > 0 && filteredPatients.length === 0) && (
+                                            <tr>
+                                                <td colSpan={5} className="bg-gray-50 border-b border-gray-200 text-center text-sm text-gray-600 py-5">
+                                                    No se han encontrado resultados coincidentes
+                                                </td>
+                                            </tr>
+                                        )}
+
+                                        {(patients.length === 0 && filteredPatients.length === 0) && (
+                                            <tr>
+                                                <td colSpan={5} className="bg-gray-50 border-b border-gray-200 text-center text-sm text-gray-600 py-5">
+                                                    No hay pacientes registrados
+                                                </td>
+                                            </tr>
+                                        )}
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                        <div className={`bg-white my-8 py-1 duration-500 ${verPaciente ? "block" : "hidden"}`}>
-                            <div className="flex flex-col border border-gray-200 shadow-md w-full p-5 rounded-3xl gap-6">
-                                <span className="block text-gray-800 text-3xl font-semibold ml-10">Detalles del Paciente</span>
-                                <div className="flex flex-row w-full items-center justify-center">
-                                    <div className="mx-3 w-[30%]">
-                                        <p><span className="font-bold">Código:</span> {PacienteDettales ? `${PacienteDettales.codigo}` : "Prueba Código"}</p>
-                                        <p><span className="font-bold">Cédula / RIF:</span> {PacienteDettales ? `${PacienteDettales.cedula}` : "Prueba Cédula / RIF"}</p>
+
+                        <div className={`bg-white my-8 py-1 duration-500 ${seePatient ? "block" : "hidden"}`}>
+                            <div className="flex flex-col w-full border border-gray-200 md:px-32 py-8 rounded-lg gap-8">
+                                <span className="block text-gray-800 text-xl font-semibold px-12">Detalles del Paciente</span>
+                                <div className="grid grid-cols-3 w-full items-start justify-center">
+                                    <div className="w-full pl-12">
+                                        <p><span className="font-bold">N° Historia:</span> {PatientDetails?.codigo} </p>
+                                        <p><span className="font-bold">Cédula de Identidad / RIF:</span> {PatientDetails?.cedula} </p>
                                     </div>
-                                    <div className="mx-3 w-[30%]">
-                                        <p><span className="font-bold">Nombre:</span> {PacienteDettales ? `${PacienteDettales.nombre}` : "Prueba Nombre"}</p>
-                                        <p><span className="font-bold">Fecha de Nacimiento:</span> {PacienteDettales ? `${PacienteDettales.fecha_nacimiento}` : "Prueba fecha"}</p>
-                                        <p><span className="font-bold">Edad:</span> {PacienteDettales ? `${calcularEdad(PacienteDettales.fecha_nacimiento)}` : "Prueba Edad"}</p>
+                                    <div className="w-full pl-12">
+                                        <p><span className="font-bold">Paciente:</span> {PatientDetails?.nombre} {PatientDetails?.apellido} </p>
+                                        <p><span className="font-bold">Fecha de Nacimiento:</span> {PatientDetails?.fecha_nacimiento ? formatDate(PatientDetails?.fecha_nacimiento.toString()).split(",")[0] : "-"} </p>
+                                        <p><span className="font-bold">Edad:</span> { PatientDetails?.fecha_nacimiento ? calculateAge(PatientDetails?.fecha_nacimiento) : "" }</p>
                                     </div>
-                                    <div className="mx-3 w-[30%]">
-                                        <p><span className="font-bold">Email:</span> correo@ejemplo.com</p>
-                                        <p><span className="font-bold">Número de Telefono:</span> 58 412 1234567</p>
+                                    <div className="w-full pl-12">
+                                        <p><span className="font-bold">Correo electrónico:</span> {PatientDetails?.email} </p>
+                                        <p><span className="font-bold">Teléfono:</span> {PatientDetails?.telefono} </p>
                                     </div>
                                 </div>
+
                                 <div className="w-full flex items-center justify-center">
-                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
+                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-sm text-white mx-3"
                                         onClick={() => {
-                                            if (PacienteDettales && PacienteDettales.codigo) {
-                                                router.push(`/especialista/pacientes/historia_clinica/${PacienteDettales.codigo}`)
+                                            if (PatientDetails && PatientDetails.codigo) {
+                                                router.push(`/especialista/pacientes/historia-clinica/${PatientDetails.codigo}`)
                                             }
                                         }}>
-                                        Historia Clínica
+                                        Historia clínica
                                     </Button>
-                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
+                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-sm text-white mx-3"
                                         onClick={() => {
-                                            if (PacienteDettales && PacienteDettales.codigo) {
-                                                router.push(`/especialista/pacientes/historia_consultas/${PacienteDettales.codigo}`)
+                                            if (PatientDetails && PatientDetails.codigo) {
+                                                router.push(`/especialista/pacientes/historial-consultas/${PatientDetails.codigo}`)
                                             }
                                         }}>
-                                        Historia de Consultas
+                                        Historial de consultas
                                     </Button>
-                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
+                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-sm text-white mx-3"
                                         onClick={() => {
-                                            if (PacienteDettales && PacienteDettales.codigo) {
-                                                router.push(`/especialista/pacientes/historia_pagos/${PacienteDettales.codigo}`)
+                                            if (PatientDetails && PatientDetails.codigo) {
+                                                router.push(`/especialista/pacientes/historial-pagos/${PatientDetails.codigo}`)
                                             }
                                         }}>
-                                        Historia de Pagos
+                                        Historial de pagos
                                     </Button>
-                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-white mx-3"
+                                    <Button className="bg-blue-500 hover:bg-blue-600 cursor-pointer rounded-full text-sm text-white mx-3"
                                         onClick={() => {
-                                            if (PacienteDettales && PacienteDettales.codigo) {
-                                                router.push(`/especialista/pacientes/odontodiagrama/${PacienteDettales.codigo}`)
+                                            if (PatientDetails && PatientDetails.codigo) {
+                                                router.push(`/especialista/pacientes/odontodiagrama/${PatientDetails.codigo}`)
                                             }
                                         }}>
                                         Odontodiagrama
                                     </Button>
-                                    <Button className="bg-green-500 hover:bg-green-600 cursor-pointer rounded-full text-white mx-3"
+                                    <Button className="bg-green-500 hover:bg-green-600 cursor-pointer rounded-full text-sm text-white mx-3"
                                         onClick={() => {
-                                            if (PacienteDettales && PacienteDettales.codigo) {
-                                                router.push(`/especialista/pacientes/${PacienteDettales.codigo}`)
+                                            if (PatientDetails && PatientDetails.codigo) {
+                                                router.push(`/especialista/pacientes/${PatientDetails.codigo}`)
                                             }
                                         }}>
-                                        Iniciar Atención
+                                        Iniciar atención
                                     </Button>
-                                    <Button className="bg-gray-300 rounded-full mx-3"
-                                        onClick={() => setverPaciente(false)}>
+                                    <Button className="bg-gray-300 rounded-full text-sm mx-3"
+                                        onClick={() => setSeePatient(false)}>
                                         Volver
                                     </Button>
                                 </div>
                             </div>
+                        </div>
+
+                        <div className={`${!seePatient ? "flex" : "hidden"} mt-8 justify-center gap-2`}>
+                            <button
+                                 className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl cursor-pointer"
+                                type="button"
+                                onClick={() => { router.push("/especialista/pacientes/registro") }}
+                            >
+                                Registrar paciente
+                            </button>
                         </div>
                     </main>
                 </div>

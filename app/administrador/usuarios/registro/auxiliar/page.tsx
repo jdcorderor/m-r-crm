@@ -1,12 +1,11 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import HeaderC from "@/components/headerC"
 import Input from "@/components/ui/input"
 import Button from "@/components/ui/button"
-import 'bootstrap-icons/font/bootstrap-icons.css'
+import HeaderC from "@/components/headerC"
 
-export default function RegisterUserB() {
+export default function Page() {
     // Router
     const router = useRouter();
     
@@ -76,7 +75,7 @@ export default function RegisterUserB() {
         };
 
         try {
-            const response = await fetch("/api/users/assistant", {
+            const response = await fetch("/api/administrator/users/assistant", {
                 method: "POST",
                 headers: {
                 "Content-Type": "application/json",
@@ -113,9 +112,8 @@ export default function RegisterUserB() {
 
     return (
         <section>
-            {/* Header */}
             <HeaderC />
-
+            
             {/* User registration section */}
             <main className="flex justify-center items-center min-h-[80vh]">
                 <div className="bg-white w-full max-w-5xl p-10">
@@ -161,9 +159,12 @@ export default function RegisterUserB() {
                                     </div>
                                 </div>
                                 <hr className="border-gray-200 mt-4 mb-5"/>
-                                <div className="flex justify-center my-7">
+                                <div className="flex justify-center my-7 gap-2">
                                     <Button type="submit" className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl">
-                                        <i className="bi bi-person-plus"></i> Registrar
+                                        Registrar
+                                    </Button>
+                                    <Button type="button" className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl" onClick={ () => { router.push("/administrador/usuarios") } }>
+                                        Volver
                                     </Button>
                                 </div>
                             </div>

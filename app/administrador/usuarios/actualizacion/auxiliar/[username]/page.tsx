@@ -3,11 +3,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
-import HeaderC from "@/components/headerC";
 import Loading from "@/components/loading";
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import HeaderC from "@/components/headerC";
 
-export default function UpdateUserB() {
+export default function Page() {
     // Router
     const router = useRouter();
     
@@ -81,7 +80,7 @@ export default function UpdateUserB() {
         };
 
         try {
-            const response = await fetch("/api/users/assistant", {
+            const response = await fetch("/api/administrator/users/assistant", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -128,7 +127,7 @@ export default function UpdateUserB() {
                 console.error("Usuario no encontrado")
             }
 
-            const response = await fetch(`/api/users/assistant/${username}`, {
+            const response = await fetch(`/api/administrator/users/assistant/${username}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -163,7 +162,6 @@ export default function UpdateUserB() {
 
             {!isLoading && (    
                 <div>
-                    {/* Header */}
                     <HeaderC />
 
                     {/* User update section */}
@@ -207,13 +205,16 @@ export default function UpdateUserB() {
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-medium mb-1 pl-2" htmlFor="password">Contraseña *</label>
-                                                <Input id="password" className="border-gray-300 text-sm" type="password" placeholder="Contraseña" value={updatedUser.password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdatedUser({ ...updatedUser, password: e.target.value })} required />
+                                                <Input id="password" className="border-gray-300 text-sm" type="password" placeholder="Contraseña" value={updatedUser.password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdatedUser({ ...updatedUser, password: e.target.value })} />
                                             </div>
                                         </div>
                                         <hr className="border-gray-200 mt-4 mb-5"/>
-                                        <div className="flex justify-center my-7">
+                                        <div className="flex justify-center my-7 gap-2">
                                             <Button type="submit" className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl">
-                                                <i className="bi bi-person-plus"></i> Actualizar
+                                                Actualizar
+                                            </Button>
+                                            <Button type="button" className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl" onClick={ () => { router.push("/administrador/usuarios") } }>
+                                                Volver
                                             </Button>
                                         </div>
                                     </div>

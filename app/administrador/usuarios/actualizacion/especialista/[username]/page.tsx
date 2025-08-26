@@ -1,14 +1,13 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import HeaderC from "@/components/headerC";
 import Image from "next/image";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
 import Loading from "@/components/loading";
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import HeaderC from "@/components/headerC";
 
-export default function UpdateUserA() {
+export default function Page() {
     // Router
     const router = useRouter();
     
@@ -85,7 +84,7 @@ export default function UpdateUserA() {
         };
 
         try {
-            const response = await fetch("/api/users/specialist", {
+            const response = await fetch("/api/administrator/users/specialist", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -135,7 +134,7 @@ export default function UpdateUserA() {
                 console.error("Usuario no encontrado")
             }
 
-            const response = await fetch(`/api/users/specialist/${username}`, {
+            const response = await fetch(`/api/administrator/users/specialist/${username}`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -183,7 +182,6 @@ export default function UpdateUserA() {
 
             {!isLoading && (
                 <div>
-                    {/* Header */}
                     <HeaderC />
 
                     {/* User update section */}
@@ -238,7 +236,7 @@ export default function UpdateUserA() {
                                         </div>
                                         <div className="mb-7">
                                             <label className="block text-sm font-medium mb-1 pl-2" htmlFor="description">Descripción *</label>
-                                            <Input id="description" className="border-gray-300 text-sm" type="text" placeholder="Descripción" value={dentist.description} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDentist({ ...dentist, description: e.target.value })} required />
+                                            <textarea id="description" className="w-full border border-gray-300 rounded-lg text-sm text-gray-500 p-2" placeholder="Descripción" rows={4} value={dentist.description} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setDentist({ ...dentist, description: e.target.value })} required />
                                         </div>
                                         <span className="block text-lg text-gray-800 font-medium mb-2">Datos de usuario</span>
                                         <hr className="border-gray-200 mb-5"/>
@@ -249,13 +247,16 @@ export default function UpdateUserA() {
                                             </div>
                                             <div>
                                                 <label className="block text-sm font-medium mb-1 pl-2" htmlFor="password">Contraseña *</label>
-                                                <Input id="password" className="border-gray-300 text-sm" type="password" placeholder="Contraseña" value={updatedUser.password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdatedUser({ ...updatedUser, password: e.target.value })} required />
+                                                <Input id="password" className="border-gray-300 text-sm" type="password" placeholder="Contraseña" value={updatedUser.password} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdatedUser({ ...updatedUser, password: e.target.value })} />
                                             </div>
                                         </div>
                                         <hr className="border-gray-200 mt-4 mb-5"/>
-                                        <div className="flex justify-center my-7">
+                                        <div className="flex justify-center my-7 gap-2">
                                             <Button type="submit" className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl">
-                                                <i className="bi bi-person-plus"></i> Actualizar
+                                                Actualizar
+                                            </Button>
+                                            <Button type="button" className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl" onClick={ () => { router.push("/administrador/usuarios") } }>
+                                                Volver
                                             </Button>
                                         </div>
                                     </div>

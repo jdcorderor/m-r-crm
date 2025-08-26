@@ -1,13 +1,23 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import HeaderD from "@/components/headerD";
-import Loading from "@/components/loading";
-import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import Loading from "@/components/loading";
+import HeaderD from "@/components/headerD";
+import { ConfirmedDate } from "@/app/types/date";
+import Calendar from "@/components/ui/calendar";
 
-export default function Home() {
+const localToISOString = (dateStr: string, timeStr: string): string => {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  const [hourRaw, minuteRaw] = timeStr.split(":");
+  const hour = timeStr.includes("PM") && hourRaw !== "12" ? Number(hourRaw) + 12 : Number(hourRaw);
+  const minute = Number(minuteRaw.replace(/\D/g, ""));
+
+  const localDate = new Date(year, month - 1, day, hour, minute);
+  return localDate.toISOString();
+};
+
+export default function Page() {
   // Router
   const router = useRouter();
 
@@ -49,25 +59,17 @@ export default function Home() {
   
   // ------------------------------------------------------------------------------
 
-  // State variables for loading view
-  const [dentistsLoaded, setDentistsLoaded] = useState(false);
-  const [reservationsLoaded, setReservationsLoaded] = useState(false);
+  // State variable for loading view
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // ------------------------------------------------------------------------------
-
-  // Define dentist type
-  type Dentist = {
-    id: number;
-    nombre: string;
-    apellido: string;
-  }
         
-  // State variable for dentists list
-  const [dentists, setDentists] = useState<Dentist[]>([]);
+  // State variable for dentists array
+  const [dentists, setDentists] = useState<{ id: number, nombre: string, apellido: string }[]>([]);
         
   // Get dentists from the DB using fetch
   useEffect(() => {
-    fetch("/api/dentists", {
+    fetch("/api/assistant/dentists", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -79,27 +81,16 @@ export default function Home() {
     .catch(error => {
       console.error("Error en el fetch", error);
     })
-    .finally(() => {
-      setDentistsLoaded(true);
-    })
   }, []);
   
   // ------------------------------------------------------------------------------
-
-  // Define confirmed reservation type
-  type ConfirmedReservation = {
-    id: number;
-    odontologo_id: number;
-    fecha: string;
-    fin_tentativo: string;
-  }
   
-  // State variable for confirmed reservations list
-  const [confirmedReservations, setConfirmedReservations] = useState<ConfirmedReservation[]>([]);
+  // State variable for confirmed reservations array
+  const [confirmedReservations, setConfirmedReservations] = useState<ConfirmedDate[]>([]);
 
   // Get confirmed reservations from the DB using fetch
   useEffect(() => {
-    fetch("/api/reservations/all/confirmed", {
+    fetch("/api/assistant/reservations/all/confirmed", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -111,168 +102,83 @@ export default function Home() {
     .catch(error => {
       console.error("Error en el fetch", error);
     })
+  }, []);
+
+  // ------------------------------------------------------------------------------
+
+  // State variable for patients array
+  const [patients, setPatients] = useState<{ id: number, nombre: string, apellido: string, cedula: string, email: string }[]>([]);
+
+  // Get patients from the DB using fetch
+  useEffect(() => {
+    fetch("/api/assistant/patients", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    })
+    .then((response) => response.json())
+    .then((data) => setPatients(data))
+    .catch(error => {
+      console.error("Error en el fetch", error);
+    })
     .finally(() => {
-      setReservationsLoaded(true);
+      setIsLoading(false);
     })
   }, []);
 
   // ------------------------------------------------------------------------------
 
-  // State variables for alert and modal visibility
+  // State variables for booking form inputs
+  const [reservation, setReservation] = useState<{ paciente_id: number | null; odontologo_id: number; fecha: string | null; fin_tentativo: string | null; motivo: string } | null>({ paciente_id: null, odontologo_id: 0, fecha: "", fin_tentativo: "", motivo: "" });
+
+  // State variables for modal visibility
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showSentModal, setShowSentModal] = useState<boolean>(false);
   const [showFailModal, setShowFailModal] = useState<boolean>(false);
-  
-  // State variables for form inputs
-  const [dentist, setDentist] = useState<number | null>(null);
-  const [name, setName] = useState<string | null>(null);
-  const [lastName, setLastName] = useState<string | null>(null);
-  const [ci, setCI] = useState<string | null>(null);
-  const [birthDate, setBirthDate] = useState<string | null>(null);
-  const [email, setEmail] = useState<string | null>(null);
-  const [phone, setPhone] = useState<string | null>(null);
-  const [address, setAddress] = useState<string | null>(null);
-  const [gender, setGender] = useState<string | null>(null);
-  const [appointmentDate, setAppointmentDate] = useState<string | null>(null);
-  const [appointmentTime, setAppointmentTime] = useState<string | null>(null);
-  const [reason, setReason] = useState<string | null>(null);
-  const [appointmentEndTime, setAppointmentEndTime] = useState<string | null>(null);
-  const [isUnderage, setIsUnderage] = useState<boolean>(false);
-  const [isApple, setIsApple] = useState(false);
-
-  useEffect(() => {
-    const ua = window.navigator.userAgent;
-    if (/iPad|iPhone|iPod|Macintosh/.test(ua)) {
-      setIsApple(true);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (birthDate) {
-      const today = new Date();
-      const birthDateObj = new Date(birthDate);
-      let age = today.getFullYear() - birthDateObj.getFullYear();
-      const m = today.getMonth() - birthDateObj.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDateObj.getDate())) {
-        age--;
-      }
-      setIsUnderage(age < 18);
-    }
-  }, [birthDate]);
 
   // ------------------------------------------------------------------------------
 
-  // Email submission handler
-  const handleEmailSubmission = async () => {
-    const data = {
-      email,
-      subject: `Confirmación de cita - ${name} ${lastName} | Mavarez & Román`,
-      text: `
-        <p>Estimado paciente,</p>
-        <p>Nos complace informarle que su cita en <strong>Mavarez & Román</strong> ha sido confirmada.</p>
+  // Datetime select handler
+  const handleDatetimeSelect = (date: string | null, hour: string | null, endHour: string | null) => {
+    setReservation(prev => prev ? { ...prev, fecha: (date && hour) ? localToISOString(date, hour) : null } : prev);
+    setReservation(prev => prev ? { ...prev, fin_tentativo: (date && endHour) ? localToISOString(date, endHour) : null } : prev);
+  };
 
-        <table style="width: 100%; border-collapse: collapse; margin: 1em 0;">
-          <tr>
-            <td><strong>Nombre:</strong></td>
-            <td>${name}</td>
-          </tr>
-          <tr>
-            <td><strong>Apellido:</strong></td>
-            <td>${lastName}</td>
-          </tr>
-          <tr>
-            <td><strong>Cédula:</strong></td>
-            <td>${ci}</td>
-          </tr>
-          <tr>
-            <td><strong>Odontólogo:</strong></td>
-            <td>Od. ${dentist !== null && dentists.some((d) => d.id === dentist) ? dentists.filter((d) => d.id === dentist)[0].nombre.split(" ")[0] + " " + dentists.filter((d) => d.id === dentist)[0].apellido.split(" ")[0] : ""}</td>
-          </tr>
-          <tr>
-            <td><strong>Fecha de cita:</strong></td>
-            <td>${appointmentDate?.split("-")[2]}-${appointmentDate?.split("-")[1]}-${appointmentDate?.split("-")[0]}</td>
-          </tr>
-          <tr>
-            <td><strong>Hora:</strong></td>
-            <td>${appointmentTime} - ${appointmentEndTime}</td>
-          </tr>
-          <tr>
-            <td><strong>Motivo:</strong></td>
-            <td>${reason}</td>
-          </tr>
-        </table>
-      `
-    }
-    
-    const response = await fetch("/api/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-      credentials: "include",
-    });
+  // ------------------------------------------------------------------------------
 
-    if (!response.ok) {
-      console.error("Error en la petición:", response.statusText);
+  // Form submission handler
+  const handleSubmit = () => {
+    if (reservation?.paciente_id && reservation?.odontologo_id && reservation?.fecha && reservation?.fin_tentativo && reservation?.motivo) {
+      setShowModal(true);
+      return;
     }
   }
 
-  // Reservation confirmation handler
-  const handleConfirmation = async () => {
-    const data = {
-      paciente: {
-        nombre: name,
-        apellido: lastName,
-        cedula: ci,
-        fecha_nacimiento: birthDate,
-        email: email,
-        telefono: phone,
-        genero: gender,
-        direccion: address
-      },
-      odontologo: dentist ? dentist : null,
-      detalles: {
-        fecha_cita: appointmentDate,
-        hora_cita: appointmentTime,
-        fin_tentativo: appointmentEndTime,
-        motivo: reason
-      }
-    }
-
-    try { 
-      const response = await fetch("/api/reservations/confirm", {
+  // Date confirmation handler
+  const handleReservationConfirmation = async () => {
+    try {
+      const response = await fetch("/api/assistant/reservations/confirm", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ paciente_id: reservation?.paciente_id, odontologo_id: reservation?.odontologo_id, fecha: reservation?.fecha, fin_tentativo: reservation?.fin_tentativo,  motivo: reservation?.motivo }),
         credentials: "include",
       });
 
       if (response.ok) {
-          setDentist(null);
-          setName(null);
-          setLastName(null);
-          setCI(null);
-          setBirthDate(null);
-          setEmail(null);
-          setPhone(null);
-          setAddress(null);
-          setGender(null);
-          setAppointmentDate(null);
-          setAppointmentTime(null);
-          setAppointmentEndTime(null);
-          setReason(null);
-          setShowModal(false);
-          setShowSentModal(true);
-          handleEmailSubmission();
-        }
-      } catch (error) {
-        console.error("Error al confirmar la reservación:", error);
+        setShowModal(false);
+        setShowSentModal(true);
+      } else {
         setShowFailModal(true);
       }
-  }
+    } catch (error) {
+      console.error("Error al enviar la solicitud:", error);
+      setShowFailModal(true);
+    }
+  };
 
   // ------------------------------------------------------------------------------
 
@@ -281,254 +187,132 @@ export default function Home() {
 
   return (
     <section>
-      {(!dentistsLoaded && !reservationsLoaded) && (
+      {isLoading && (
         <div className="flex justify-center items-center min-h-screen bg-white transition-opacity duration-500">
           <Loading />
         </div>
       )}
-      
-      {(dentistsLoaded && reservationsLoaded) && (
+
+      {!isLoading && (
         <div> 
-          {/* Header */}
           <HeaderD />
+          
+          <div className="flex flex-col w-full max-w-3xl bg-gray-50 border border-gray-200 rounded-2xl p-16 mx-auto my-16"> 
+            <div className="flex flex-col w-full max-w-3xl text-sm gap-4">
+              <span className="block text-gray-800 text-2xl text-center font-semibold">Registro de Citas</span>
 
-          {/* Reservation management form */}
-          <main className="flex justify-center items-center min-h-[80vh]">
-            <div className="bg-white w-full max-w-5xl p-10">
-              <span className="block text-2xl text-gray-800 font-semibold mb-8 text-center">Registro de Citas</span>
-              
-              <form className="space-y-8">
-                <span className="block text-lg text-gray-800 font-medium mb-2">Información básica</span>
-                <hr className="border-gray-200 mb-5"/>
+              <hr className="border-gray-200"/>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Nombre *</label>
-                    <Input required placeholder="Nombre" className="border-gray-300 text-sm" value={name ?? ""} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)}/>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Apellido *</label>
-                    <Input required placeholder="Apellido" className="border-gray-300 text-sm" value={lastName ?? ""} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}/>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Fecha de nacimiento *</label>
-                    <input required className={`px-3 py-2 bg-white text-gray-500 outline-none border border-gray-300 text-sm shadow-sm rounded-lg duration-150 mb-2 ${isApple ? "w-[94%] h-10" : "w-full"}`} type="date" value={birthDate ?? ""} lang="es" inputMode="numeric" pattern="\d{4}-\d{2}-\d{2}" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setBirthDate(e.target.value)} max={new Date().toISOString().split('T')[0]}/>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Cédula de Identidad *</label>
-                    <Input required type="number" min="100000" max="99999999" placeholder="Cédula (ej. 12345678)" className="border-gray-300 text-sm" value={ci ?? ""} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCI(e.target.value)}/>
-                  </div>
-                </div>      
+              <div className="flex flex-col w-full max-w-[600px] mx-auto py-6 gap-4">
+                <span className="block text-gray-800 text-base font-semibold">Paciente *</span>
 
-                {isUnderage && (
-                  <span className="text-red-600 text-xs block text-center mb-4">
-                    Si el paciente no dispone de cédula de identidad, por favor proporcionar la de su representante legal.
-                  </span>
-                )}
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Correo electrónico *</label>
-                    <Input required type="email" placeholder="nombre@correo.com" className="border-gray-300 text-sm" value={email ?? ""} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}/>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Teléfono *</label>
-                    <Input required type="number" placeholder="Teléfono (ej. 04241234567)" className="border-gray-300 text-sm" value={phone ?? ""} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPhone(e.target.value)}/>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Dirección *</label>
-                    <Input required type="text" placeholder="Dirección" className="border-gray-300 text-sm" value={address ?? ""} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}/>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Género *</label>
-                    <div className="flex justify-center gap-4 mt-2 ml-2">
-                      <label className="flex items-center cursor-pointer">
-                        <input type="radio" name="gender" value="M" checked={gender === "M"} onChange={() => setGender("M")} className="accent-blue-600 w-3 h-3" required/>
-                        <span className="ml-2 text-sm">Masculino</span>
-                      </label>
-                      <label className="flex items-center cursor-pointer">
-                        <input type="radio" name="gender" value="F" checked={gender === "F"} onChange={() => setGender("F")} className="accent-blue-600 w-3 h-3"/>
-                        <span className="ml-2 text-sm">Femenino</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Odontólogo *</label>
-                  <div className="flex gap-2 mb-3 flex-col md:flex-row">
-                    {dentists.map((dentistItem) => (
-                      <div className="w-full" key={dentistItem.id}>
-                        <button key={dentistItem.id} type="button" className={`w-full bg-gray-100 hover:bg-gray-200 text-sm text-gray-800 font-semibold py-2 px-8 rounded-3xl shadow-sm transition-colors border-3 cursor-pointer ${dentist === dentistItem.id ? "border-blue-500" : "border-gray-300"}`} onClick={() => setDentist(dentistItem.id)}>
-                          {dentistItem.nombre.split(" ")[0]} {dentistItem.apellido.split(" ")[0]}
-                        </button>
-                      </div>
+                <div className="flex flex-col flex-1 gap-1">
+                  <select name="paciente" className="w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none" value={reservation?.paciente_id ?? ""} onChange={(e) => { setReservation(prev => prev ? { ...prev, paciente_id: Number(e.target.value) } : prev); }}>
+                    <option value="" disabled>Seleccione un paciente</option>
+                    {patients.map((p, index) => (
+                      <option key={index} value={p.id}>{p.nombre} {p.apellido} - {p.cedula}</option>
                     ))}
-                  </div>
+                  </select>
                 </div>
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Fecha de cita *</label>
-                    <input required type="date" className={`px-3 py-2 bg-white text-gray-500 outline-none border border-gray-300 text-sm shadow-sm rounded-lg duration-150 mb-2 ${isApple ? "w-[94%] h-10" : "w-full"}`} value={appointmentDate ?? ""} lang="es" inputMode="numeric" pattern="\d{4}-\d{2}-\d{2}" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAppointmentDate(e.target.value)}
-                      min={(() => {
-                        const now = new Date();
-                        
-                        if (now.getHours() > 14 || (now.getHours() === 14 && now.getMinutes() > 0)) {
-                          const tomorrow = new Date(now);
-                          tomorrow.setDate(now.getDate() + 1);
-                          return tomorrow.toISOString().split('T')[0];
-                        }
+              <hr className="border-gray-200"/>
 
-                        return now.toISOString().split('T')[0];
-                      })()}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Hora de cita *</label>
-                    <input required type="time" className={`px-3 py-2 bg-white text-gray-500 outline-none border border-gray-300 text-sm shadow-sm rounded-lg duration-150 mb-2 ${isApple ? "w-[94%] h-10" : "w-full"}`} value={appointmentTime ?? ""} lang="es" inputMode="numeric" pattern="[0-9]{2}:[0-9]{2}" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAppointmentTime(e.target.value)}
-                      min={ appointmentDate === new Date().toISOString().split('T')[0] ? (() => {
-                        const now = new Date();
-                        const maxHour = 14;
-                        if (now.getHours() > maxHour || (now.getHours() === maxHour && now.getMinutes() > 0)) {
-                          return "14:00";
-                        }
-                          return now.toTimeString().slice(0, 5);
-                        })() : "08:00"
-                      }
-                      max="14:00"
-                    />
-                  </div>
-                </div>
+              <div className="flex flex-col w-full max-w-[600px] mx-auto py-6 gap-4">
+                <span className="block text-gray-800 text-base font-semibold">Especialista *</span>
 
-                {dentist !== null && appointmentDate && appointmentTime && new Date(`${appointmentDate}T${appointmentTime}`).toISOString() > new Date().toISOString() && confirmedReservations.some((c) => {
-                  if (c.odontologo_id !== dentist) return false;
-                    
-                  const start = new Date(`${c.fecha}`).toISOString();
-                  const end = new Date(`${c.fin_tentativo}`).toISOString();
-                  const selected = new Date(`${appointmentDate}T${appointmentTime}`).toISOString();
-                    
-                  return selected >= start && selected < end;
-                }) && (
-                  <span className="text-red-600 text-xs block text-center mt-1 mb-4">
-                    Ya existe una cita agendada para este odontólogo en el horario seleccionado. <br /> Por favor, elija otro horario.
-                  </span>
-                )}
-
-                {appointmentDate && appointmentTime && (() => {
-                  const selectedDateTime = new Date(`${appointmentDate}T${appointmentTime}`);
-                  const now = new Date();
-                  const selectedHour = selectedDateTime.getHours();
-                  const selectedMinute = selectedDateTime.getMinutes();
-
-                  const isValidHour = (
-                    (selectedHour > 8 && selectedHour < 14) ||
-                    (selectedHour === 8 && selectedMinute >= 0) ||
-                    (selectedHour === 14 && selectedMinute === 0)
-                  );
-
-                  {/* Validates past dates */} 
-                  if (selectedDateTime.toISOString() < now.toISOString()) {
-                    return (
-                      <span className="text-red-600 text-xs block text-center mt-1 mb-4">
-                        Ha seleccionado un horario inválido. <br /> Por favor, elija otro horario.
-                      </span>
-                    );
-                  }
-
-                  {/* Validates schedule */}
-                  if (!isValidHour) {
-                    return (
-                      <span className="text-red-600 text-xs block text-center mt-1 mb-4">
-                        El horario debe estar entre las 08:00 y las 14:00. <br /> Por favor, elija otro horario.
-                      </span>
-                    );
-                  }
-
-                  return null;
-                })()}
-
-                <div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Motivo *</label>
-                    <Input required placeholder="Motivo" value={reason ?? ""} className="border-gray-300 text-sm" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setReason(e.target.value)}/>
-                  </div>
-                </div>
-
-                <span className="block text-lg text-gray-800 font-medium mb-2">Información adicional</span>
-                <hr className="border-gray-200 mb-5"/>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1 pl-2" htmlFor="">Hora de finalización (aprox.) *</label>
-                  <input required type="time" className={`px-3 py-2 bg-white text-gray-500 outline-none border border-gray-300 text-sm shadow-sm rounded-lg duration-150 ${isApple ? "w-[94%] h-10" : "w-full"}`} value={appointmentEndTime ?? ""} lang="es" inputMode="numeric" pattern="[0-9]{2}:[0-9]{2}" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAppointmentEndTime(e.target.value)} min={ appointmentTime ?? "" } max="16:00"/>
-                </div>
-
-                { appointmentTime && appointmentEndTime && (appointmentTime > appointmentEndTime) && (
-                  <span className="text-red-600 text-xs block text-center mt-1 mb-6">
-                        La hora de finalización debe ser posterior a la hora de la cita. <br /> Por favor, elija otro horario.
-                  </span>
-                )}
-                
-                <div>
-                  <div className="flex justify-center gap-2">
-                    <Button type="button" className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl" onClick={ () => { if (appointmentEndTime) { setShowModal(true) } } }>
-                      Registrar
-                    </Button>
-
-                    <Button type="button" className="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-8 rounded shadow-sm transition-colors border-3 border-gray-300 rounded-3xl" onClick={ () => { router.push("/auxiliar/citas") } }>
-                      Cancelar
-                    </Button>
-
-                    {/* Confirm modal */}
-                    {showModal && (
-                        <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
-                          <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
-                            <span className="block text-2xl font-bold text-center my-3">Confirmar la cita</span>
-                            <span className="block text-center text-medium mb-8">Al confirmar la cita, se enviará una notificación al correo electrónico del paciente: <strong>{email}</strong>.</span>
-                            <div className="flex justify-between mt-4">
-                            <Button className="w-[48%] bg-gray-200 hover:bg-gray-300 rounded-3xl" onClick={() => setShowModal(false)}>Cancelar</Button>
-                            <Button className="w-[48%] bg-gray-600 text-white hover:bg-gray-400 rounded-3xl" onClick={() => { handleConfirmation(); setShowModal(false); }}>Continuar</Button>
-                            </div>
-                          </div>
-                        </div>
-                    )}
-
-                    {/* Success modal */}
-                    {showSentModal && (
-                      <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
-                        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-full flex flex-col items-center">
-                            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
-                                <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                                </svg>
-                            </div>
-                            <span className="text-xl font-semibold text-center mb-2">¡La cita ha sido registrada!</span>
-                            <span className="text-center text-sm text-gray-600 my-2">Por favor, <strong> verifique que haya sido enviado un correo electrónico. </strong></span>
-                            <Button className="w-full bg-green-300 hover:bg-green-500 rounded mt-3" onClick={() => { setShowSentModal(false); router.push("/auxiliar/citas") }}> Continuar </Button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Fail modal */}
-                    {showFailModal && (
-                      <div className="fixed inset-0 flex items-center justify-center z-[1000] bg-black/40 backdrop-blur-sm">
-                        <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-full flex flex-col items-center">
-                            <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-4">
-                                <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </div>
-                            <span className="text-xl font-semibold text-center mb-2">¡Ups, ha ocurrido un error!</span>
-                            <span className="text-center text-sm text-gray-600 my-2">Ha ocurrido un error inesperado. Por favor, intente nuevamente. Si el problema persiste, comuníquese con soporte.</span>
-                            <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg py-2 mt-3 transition" onClick={() => setShowFailModal(false)}> Continuar </Button>
-                        </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {dentists.map((d, index) => (
+                    <div className="w-full" key={index}>
+                      <Button key={index} type="button" className={`${reservation?.odontologo_id === d.id ? "border-blue-600" : "border-gray-200"} w-full bg-white border-3 rounded-full shadow-none py-3 hover:bg-white hover:border-blue-600`} onClick={() => setReservation(prev => prev ? { ...prev, odontologo_id: Number(d.id) } : prev)}>
+                        {d.nombre.split(" ")[0]} {d.apellido.split(" ")[0]}
+                      </Button>
                     </div>
-                    )}
-                  </div>
+                  ))}
                 </div>
-              </form>
+              </div>
+
+              <hr className="border-gray-200"/>
+
+              <div className="flex flex-col overflow-hidden py-6 gap-4">
+                <Calendar onHandleChange={ handleDatetimeSelect } data={{ id: undefined, fecha: null, fin_tentativo: null }} confirmedDates={ confirmedReservations } dentistID={ (reservation?.odontologo_id != null) ? (reservation.odontologo_id).toString() : null }/> 
+              </div>
+
+              <hr className="border-gray-200"/>
+                                
+              <div className="flex flex-col w-full max-w-[600px] mx-auto py-6 gap-4">
+                <span className="block text-gray-800 text-base font-semibold px-1">Motivo *</span>
+
+                <textarea id="motivo" required placeholder="Motivo" value={reservation?.motivo ?? ""} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setReservation(prev => prev ? { ...prev, motivo: e.target.value } : prev)} rows={4}
+                className="w-full bg-white text-gray-700 border border-gray-300 rounded-lg outline-none px-3 py-2 transition duration-150"/>
+              </div>
+
+              <div className="flex justify-center gap-2 text-sm">
+                <Button className="px-8 py-1 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                onClick={ () => { handleSubmit() } }>
+                  Guardar
+                </Button>
+                <Button className="px-8 py-1 bg-gray-200 rounded-full shadow-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 ease-in-out"
+                onClick={() => router.push(`/auxiliar/citas`)}>
+                  Volver
+                </Button>
+              </div>
             </div>
-          </main>
+          </div>
+
+          {/* Confirm modal */}
+          {showModal && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
+              <div className="bg-white rounded-lg shadow-lg p-8 max-w-sm w-full">
+                <span className="block text-xl font-semibold text-center my-3">Confirmar la cita</span>
+                <span className="block text-center text-sm mb-8">Al confirmar la cita, se enviará una notificación al correo electrónico del paciente: <strong>{patients.filter((p) => p.id === reservation?.paciente_id)[0].email}</strong>.</span>
+                <div className="flex justify-between mt-4 gap-2">
+                  <Button className="w-full bg-gray-200 hover:bg-gray-300 rounded-full text-sm" onClick={() => { setShowModal(false); }}>
+                    Cancelar
+                  </Button>
+                  <Button className="w-full bg-gray-600 text-white hover:bg-gray-400 rounded-full text-sm" onClick={() => { handleReservationConfirmation(); setShowModal(false); }}>
+                    Continuar
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Success modal */}
+          {showSentModal && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 bg-transparent bg-opacity-30 backdrop-blur-sm ">
+              <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-full flex flex-col items-center">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-green-100 mb-4">
+                  <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span className="text-xl font-semibold text-center mb-2">¡La cita ha sido confirmada!</span>
+                <span className="text-center text-sm text-gray-600 my-2">Por favor, <strong> verifique que haya sido enviado un correo electrónico. </strong></span>
+                <Button className="w-full bg-green-300 hover:bg-green-400 rounded-full mt-3" onClick={() => { setShowSentModal(false); router.push("/auxiliar/citas"); }}> 
+                  Continuar 
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Fail modal */}
+          {showFailModal && (
+            <div className="fixed inset-0 flex items-center justify-center z-[1000] bg-black/40 backdrop-blur-sm">
+              <div className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-full flex flex-col items-center">
+                <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-100 mb-4">
+                  <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </div>
+                <span className="text-xl font-semibold text-center mb-2">¡Ups, ha ocurrido un error!</span>
+                <span className="text-center text-sm text-gray-600 my-2">Ha ocurrido un error inesperado. Por favor, intente nuevamente. Si el problema persiste, comuníquese con soporte.</span>
+                <Button className="w-full bg-red-500 hover:bg-red-600 text-white font-medium rounded-full py-2 mt-3 transition" onClick={() => setShowFailModal(false)}> 
+                  Continuar 
+                </Button>
+              </div>
+            </div>
+          )}    
         </div>
       )}
     </section>

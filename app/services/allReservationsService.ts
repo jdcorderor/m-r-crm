@@ -1,5 +1,5 @@
 export async function getAllReservations() {
-    const response = await fetch("/api/reservations/all", {
+    const response = await fetch("/api/assistant/reservations/all", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
