@@ -94,7 +94,7 @@ export default function Page() {
     useEffect(() => {
         const fetchRecord = async () => {
             try {
-                const response = await fetch(`/api/specialist/payments-record/${id}`, {
+                const response = await fetch(`/api/administrator/income/payments-record/${id}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

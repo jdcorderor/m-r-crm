@@ -1,7 +1,5 @@
 import { Client } from "pg";
 import { NextResponse, NextRequest } from "next/server";
-import fs from 'fs';
-import path from 'path';
 
 // Define types for the odontogram structure
 type Segmento = { [segmentoId: string]: number };
@@ -150,52 +148,6 @@ function getTDFullTooth(valor: number, toothLabel: string, diagnosis: string[], 
     return [diagnosis, treatment];
 }
 
-// // Function to get treatment and diagnosis from the odontogram
-function getTreatmentAndDiagnosis(filtered: { sectorName: string; modifiedTeeth: { dienteIndex: number; modifiedSegments: { segmentoId: string; valor: number }[]; }[]; }[]) {
-    const dir = path.resolve(process.cwd(), 'data');
-    const filePath = path.join(dir, 'consultation.json');
-    
-    let diagnosis: string[] = [];
-    let treatment: string[] = [];
-    
-    if (fs.existsSync(dir) && fs.existsSync(filePath)) {
-        const existingRaw = fs.readFileSync(filePath, "utf-8");
-        const existingData = JSON.parse(existingRaw);
-
-        diagnosis = existingData.diagnosis;
-        treatment = existingData.treatment;
-    }
-    
-    for (const { sectorName, modifiedTeeth } of filtered) {
-        for (const { dienteIndex, modifiedSegments } of modifiedTeeth) {
-            for (const { segmentoId, valor } of modifiedSegments) {
-                const toothLabel = (Number(sectorName) * 10) + Number(dienteIndex + 1);
-                
-                if ([0, 4, 5, 6, 7, 8, 9, 10, 11, 14].includes(valor)) {
-                    [diagnosis, treatment] = getTDFullTooth(valor, toothLabel.toString(), diagnosis, treatment);
-                    break;
-                } else {
-                    const segmentLabel = getSegmentLabels((Number(sectorName) * 10) + Number(dienteIndex + 1), Number(segmentoId));
-                    [diagnosis, treatment] = getTD(valor, toothLabel.toString(), segmentLabel, diagnosis, treatment);
-                }
-            }
-        }
-    }
-
-    // Save treatment and diagnosis
-    const data = { diagnosis, treatment };
-
-    if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir);
-    }
-
-    if (fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, JSON.stringify({ diagnosis: diagnosis, treatment: treatment }, null, 2), 'utf-8');
-    } else {
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-    }
-}
-
 // --------------------------------------------------------------------------
 
 // PUT Route
@@ -333,7 +285,58 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{i
         }
 
         // Get treatment and diagnosis
-        getTreatmentAndDiagnosis(filtered);
+        const result = await client.query(`
+            SELECT 
+                dt.diagnostico, 
+                dt.tratamiento 
+            FROM historias h
+            LEFT JOIN diagnostico_tratamiento dt ON dt.historia_id = h.id
+            WHERE h.codigo = $1 LIMIT 1
+        `, [id]);
+
+        let diagnosis: string[] = [];
+        let treatment: string[] = [];
+        
+        if (result.rows.length !== 0) {
+            diagnosis = result.rows[0].diagnostico ?? [];
+            treatment = result.rows[0].tratamiento ?? [];
+        }
+
+        for (const { sectorName, modifiedTeeth } of filtered) {
+            for (const { dienteIndex, modifiedSegments } of modifiedTeeth) {
+                for (const { segmentoId, valor } of modifiedSegments) {
+                    const toothLabel = (Number(sectorName) * 10) + Number(dienteIndex + 1);
+                    
+                    if ([0, 4, 5, 6, 7, 8, 9, 10, 11, 14].includes(valor)) {
+                        [diagnosis, treatment] = getTDFullTooth(valor, toothLabel.toString(), diagnosis, treatment);
+                        break;
+                    } else {
+                        const segmentLabel = getSegmentLabels((Number(sectorName) * 10) + Number(dienteIndex + 1), Number(segmentoId));
+                        [diagnosis, treatment] = getTD(valor, toothLabel.toString(), segmentLabel, diagnosis, treatment);
+                    }
+                }
+            }
+        }
+
+        const recordIDResult = await client.query("SELECT id FROM historias WHERE codigo = $1", [id]);
+
+        const recordID = recordIDResult.rows[0].id;
+
+        const existingDT = await client.query(`
+            SELECT 1 FROM diagnostico_tratamiento WHERE historia_id = $1 LIMIT 1
+        `, [recordID]);
+
+        if (existingDT.rows.length > 0) {
+            await client.query(
+                "UPDATE diagnostico_tratamiento SET diagnostico = $1, tratamiento = $2 WHERE historia_id = $3",
+                [diagnosis, treatment, recordID]
+            );
+        } else {
+            await client.query(
+                "INSERT INTO diagnostico_tratamiento (historia_id, diagnostico, tratamiento) VALUES ($1, $2, $3)",
+                [recordID, diagnosis, treatment]
+            );
+        }
 
         return NextResponse.json({ message: "OK" }, { status: 200 });
     } catch (error) {

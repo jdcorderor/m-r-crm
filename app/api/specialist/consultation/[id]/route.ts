@@ -1,7 +1,5 @@
 import { Client } from "pg";
 import { NextResponse, NextRequest } from "next/server";
-import fs from "fs";
-import path from "path";
 
 // POST Route
 export async function POST(request: NextRequest, { params }: { params: Promise<{id: number}> }): Promise<NextResponse> {
@@ -91,12 +89,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
         // -------------------------------------------------------------------------------------------
 
-        const dir = path.resolve(process.cwd(), 'data');
-        const filePath = path.join(dir, 'consultation.json');
-        
-        if (fs.existsSync(filePath)) {
-            fs.writeFileSync(filePath, JSON.stringify({ diagnosis: [], treatment: [] }, null, 2), 'utf-8');
-        }
+        await client.query(`
+            DELETE FROM 
+                diagnostico_tratamiento 
+            WHERE historia_id = $1
+        `, [recordID]);
 
         // -------------------------------------------------------------------------------------------
 

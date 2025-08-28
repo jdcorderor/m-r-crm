@@ -123,7 +123,7 @@ export default function Page() {
     useEffect(() => {
         async function fetchConsultationData() {
             try {
-                const response = await fetch(`/api/specialist/consultation/diagnosis-treatment`, {
+                const response = await fetch(`/api/specialist/consultation/diagnosis-treatment/${id}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
@@ -138,8 +138,8 @@ export default function Page() {
 
                 const data = await response.json();
 
-                setDiagnosis(data.diagnosis || []);
-                setTreatment(data.treatment || []);
+                setDiagnosis(data.diagnostico || []);
+                setTreatment(data.tratamiento || []);
 
             } catch (error) {
                 console.error("Error fetching consultation data:", error);

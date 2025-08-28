@@ -30,30 +30,39 @@ export async function GET(): Promise<NextResponse> {
         const statB = ((resultB.rows[0]?.total_consultas ?? 0) - (resultB.rows[0]?.total_pagado ?? 0));
 
         const queryC = `
-            WITH totales_por_paciente AS (
+            WITH consultas_por_historia AS (
+                SELECT
+                    historia_id,
+                    SUM(monto_total) AS total_consultas
+                FROM consultas
+                GROUP BY historia_id
+            ),
+
+            pagos_por_historia AS (
+                SELECT
+                    c.historia_id,
+                    SUM(p.monto) AS total_pagos
+                FROM consultas c
+                JOIN consultas_pagos cp ON cp.consulta_id = c.id
+                JOIN pagos p ON p.id = cp.pago_id
+                GROUP BY c.historia_id
+            ),
+
+            totales_por_paciente AS (
                 SELECT
                     h.id AS historia_id,
-                    COALESCE(SUM(c.monto_total), 0) AS total_consultas,
-                    COALESCE(SUM(p.monto), 0) AS total_pagos
+                    COALESCE(cph.total_consultas, 0) AS total_consultas,
+                    COALESCE(pph.total_pagos, 0) AS total_pagos
                 FROM historias h
-                LEFT JOIN consultas c ON c.historia_id = h.id
-                LEFT JOIN consultas_pagos cp ON cp.consulta_id = c.id
-                LEFT JOIN pagos p ON p.id = cp.pago_id
-                GROUP BY h.id
+                LEFT JOIN consultas_por_historia cph ON cph.historia_id = h.id
+                LEFT JOIN pagos_por_historia pph ON pph.historia_id = h.id
             ),
 
-            pacientes_con_deuda AS (
-                SELECT *
+            conteos AS (
+                SELECT
+                    COUNT(*) AS total,
+                    COUNT(*) FILTER (WHERE total_pagos < total_consultas) AS con_deuda
                 FROM totales_por_paciente
-                WHERE total_pagos < total_consultas
-            ),
-
-            conteo_total AS (
-                SELECT COUNT(*) AS total FROM totales_por_paciente
-            ),
-
-            conteo_con_deuda AS (
-                SELECT COUNT(*) AS con_deuda FROM pacientes_con_deuda
             )
 
             SELECT
@@ -61,12 +70,11 @@ export async function GET(): Promise<NextResponse> {
                     WHEN total = 0 THEN 0
                     ELSE con_deuda * 100.0 / total
                 END AS porcentaje_con_deuda
-            FROM conteo_total, conteo_con_deuda;
+            FROM conteos;
         `;
 
         const resultC = await client.query(queryC, []);
         const statC = resultC.rows[0]?.porcentaje_con_deuda ?? 0;
-
         return NextResponse.json({ totalIncome: statA, pendingToPay: statB, debtPercentage: statC });
     } catch (error) {
         console.log(error);
