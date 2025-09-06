@@ -8,8 +8,8 @@ export default function HeaderA() {
   const [isOpen, setIsOpen] = useState(false)
 
   const routes = [
-    { href: "/documentacion", label: "Documentación" },
-    { href: "/soporte", label: "Soporte" },
+    { href: "/Mavarez & Román - Manual de Usuario.pdf", label: "Documentación" },
+    { href: "mailto:clinicamavarezroman.soporte@gmail.com", label: "Soporte" },
     { href: "/login", label: "Iniciar sesión" },
   ]
 
