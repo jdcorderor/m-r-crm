@@ -24,17 +24,17 @@ export default function HeaderB() {
     <header className="sticky top-0 z-50 w-full px-[5vw] supports-[backdrop-filter]:bg-white/90 pt-[10px]">
       <div className="flex h-16 items-center justify-start">
         <div className="flex-1">
-            <Link href="/especialista" className="text-sm text-black font-medium whitespace-nowrap" style={{ textDecoration: "none" }}>
+            <Link href="/especialista" className="text-sm text-black font-medium whitespace-nowrap no-underline">
                 Mavarez & Román
             </Link>
         </div>
         <nav className="hidden md:flex gap-6 justify-end">
           {routes.map((route) => (
-            <Link key={route.href} href={route.href} className="text-sm text-black transition-colors" style={{ textDecoration: "none" }}>
+            <Link key={route.href} href={route.href} className="text-sm text-black transition-colors no-underline">
               {route.label}
             </Link>
           ))}
-          <a onClick={ () => { handleLogout(); router.push("/login")} } className="text-sm text-black transition-colors cursor-pointer" style={{ textDecoration: "none" }}> Cerrar sesión </a>
+          <a onClick={ () => { handleLogout(); router.push("/login")} } className="text-sm text-black transition-colors cursor-pointer no-underline"> Cerrar sesión </a>
         </nav>
         
         {/* Toggle menu */}
@@ -47,11 +47,11 @@ export default function HeaderB() {
           <SheetContent>
             <nav className="flex flex-col gap-4 mt-8">
               {routes.map((route) => (
-                <Link key={route.href} href={route.href} className="text-[2.7vh] text-white transition-colors" style={{ textDecoration: "none" }} onClick={() => setIsOpen(false)}>
+                <Link key={route.href} href={route.href} className="text-[2.7vh] text-white transition-colors no-underline" onClick={() => setIsOpen(false)}>
                   {route.label}
                 </Link>
               ))}
-              <a onClick={ () => { handleLogout(); router.push("/login")} } className="text-[2.7vh] text-white transition-colors cursor-pointer" style={{ textDecoration: "none" }}> Cerrar sesión </a>
+              <a onClick={ () => { handleLogout(); router.push("/login")} } className="text-[2.7vh] text-white transition-colors cursor-pointer no-underline"> Cerrar sesión </a>
             </nav>
           </SheetContent>
         </Sheet>

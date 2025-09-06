@@ -22,11 +22,17 @@ export default function HeaderA() {
             </Link>
         </div>
         <nav className="hidden md:flex gap-6 justify-end">
-          {routes.map((route) => (
-            <Link key={route.href} href={route.href} className="text-sm text-black transition-colors" style={{ textDecoration: "none" }}>
-              {route.label}
-            </Link>
-          ))}
+          {routes.map((route) =>
+            route.href.startsWith("mailto:") || route.href.endsWith(".pdf") ? (
+              <a key={route.href} href={route.href} className="text-sm text-black transition-colors no-underline" target="_blank" rel="noopener noreferrer">
+                {route.label}
+              </a>
+            ) : (
+              <Link key={route.href} href={route.href} className="text-sm text-black transition-colors no-underline">
+                {route.label}
+              </Link>
+            )
+          )}
         </nav>
         
         {/* Toggle menu */}
@@ -38,11 +44,13 @@ export default function HeaderA() {
           </SheetTrigger>
           <SheetContent>
             <nav className="flex flex-col gap-4 mt-8 duration-500">
-              {routes.map((route) => (
-                <Link key={route.href} href={route.href} className="text-[2.7vh] text-white transition-colors" style={{ textDecoration: "none" }} onClick={() => setIsOpen(false)}>
-                  {route.label}
-                </Link>
-              ))}
+              {routes.map((route) =>
+                route.href.startsWith("mailto:") || route.href.endsWith(".pdf") ? (
+                  <a key={route.href} href={route.href} className="text-[2.7vh] text-white transition-colors no-underline" onClick={() => setIsOpen(false)} target="_blank" rel="noopener noreferrer">{route.label}</a>
+                ) : (
+                  <Link key={route.href} href={route.href} className="text-[2.7vh] text-white transition-colors no-underline" onClick={() => setIsOpen(false)}>{route.label}</Link>
+                )
+              )}
             </nav>
           </SheetContent>
         </Sheet>
